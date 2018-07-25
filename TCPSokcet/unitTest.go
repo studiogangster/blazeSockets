@@ -5,9 +5,6 @@ import (
 	"io"
 	"log"
 	"net"
-	"os"
-	"os/exec"
-	"strings"
 	"sync"
 
 	"github.com/gobwas/ws"
@@ -153,7 +150,7 @@ func handleConnection(conn net.Conn, err error) {
 
 	if err != nil {
 		// handle error
-		fmt.Println("Error upgrading socket")
+		fmt.Println("Error upgrading socket", err)
 		conn.Close()
 		countOpenFiles()
 
@@ -164,13 +161,13 @@ func handleConnection(conn net.Conn, err error) {
 }
 
 func countOpenFiles() {
-	out, err := exec.Command("/bin/sh", "-c", fmt.Sprintf("lsof -p %v", os.Getpid())).Output()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// out, err := exec.Command("/bin/sh", "-c", fmt.Sprintf("lsof -p %v", os.Getpid())).Output()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	lines := strings.Split(string(out), "\n")
-	fmt.Println(len(lines) - 1)
+	// lines := strings.Split(string(out), "\n")
+	// fmt.Println(len(lines) - 1)
 
 }
 
