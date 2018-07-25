@@ -66,8 +66,9 @@ func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 		header, err := ws.ReadHeader(conn)
 		if err != nil {
 			// handle error
-			// poller.Stop(desc)
-			// conn.Close()
+			poller.Stop(desc)
+			conn.Close()
+			fmt.Println("Stopping poller", err)
 			// countOpenFiles()
 			// fmt.Println("WRONG H", channel.socket_name)
 			return
@@ -80,7 +81,7 @@ func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 			// poller.Stop(desc)
 			// conn.Close()
 			// countOpenFiles()
-			fmt.Println("WRONG D", channel.socket_name)
+			fmt.Println("Stopping poller", err)
 			return
 		}
 		if header.Masked {
@@ -122,13 +123,13 @@ func handleConnection(conn net.Conn, err error) {
 	defer func() {
 		// countOpenFiles()
 		if r := recover(); r != nil {
-			// fmt.Println("DEFER")
+			fmt.Println("DEFER", r)
 			// fmt.Println("Recovered in f", r)
 		}
 	}()
 
 	if err != nil {
-		fmt.Println("ERROR", err)
+		fmt.Println("Error initializing socket")
 		conn.Close()
 		countOpenFiles()
 		return
@@ -151,6 +152,7 @@ func handleConnection(conn net.Conn, err error) {
 
 	if err != nil {
 		// handle error
+		fmt.Println("Error upgrading socket")
 		conn.Close()
 		countOpenFiles()
 
