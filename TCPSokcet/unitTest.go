@@ -184,6 +184,7 @@ func main() {
 
 	for {
 		conn, err := ln.Accept()
+		fmt.Println("Accepted socket")
 		go handleConnection(conn, err)
 	}
 }
