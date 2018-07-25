@@ -54,7 +54,7 @@ func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 	desc := netpoll.Must(netpoll.HandleRead(conn))
 	// Below is async call, that return the functions and callback gets executed when event occurs!
 	poller.Start(desc, func(ev netpoll.Event) {
-
+		fmt.Println("goRotiene reigisterReadEvent", "#", getGID())
 		// fmt.Println("Async Callback")
 		if ev&netpoll.EventReadHup != 0 {
 			poller.Stop(desc)
