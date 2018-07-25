@@ -119,7 +119,8 @@ func CreateChannel(conn net.Conn, sessionKey string) {
 }
 
 func handleConnection(conn net.Conn, err error) {
-	countOpenFiles()
+
+	fmt.Println("handleConnection")
 	defer func() {
 		// countOpenFiles()
 		if r := recover(); r != nil {
@@ -146,9 +147,9 @@ func handleConnection(conn net.Conn, err error) {
 		},
 	}
 
-	// fmt.Println("Upgrade hoga")
+	fmt.Println("Upgrade hoga")
 	_, err = u.Upgrade(conn)
-	// fmt.Println("Upgrade ho gayi")
+	fmt.Println("Upgrade ho gayi")
 
 	if err != nil {
 		// handle error
@@ -157,9 +158,9 @@ func handleConnection(conn net.Conn, err error) {
 		countOpenFiles()
 
 	}
-
+	fmt.Println("CreateChannel")
 	CreateChannel(conn, sessionKey)
-
+	fmt.Println("Created Channel")
 }
 
 func countOpenFiles() {
