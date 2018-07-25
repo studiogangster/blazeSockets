@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"runtime"
+	"strconv"
 	"sync"
+	"time"
 
 	"github.com/gobwas/ws"
 	"github.com/mailru/easygo/netpoll"
@@ -117,8 +120,7 @@ func CreateChannel(conn net.Conn, sessionKey string) {
 }
 
 func handleConnection(conn net.Conn, err error) {
-
-	fmt.Println("handleConnection")
+	fmt.Println("goRotiene handleConnection", "#", getGID())
 	defer func() {
 		// countOpenFiles()
 		if r := recover(); r != nil {
@@ -145,9 +147,9 @@ func handleConnection(conn net.Conn, err error) {
 		},
 	}
 
-	fmt.Println("Upgrade hoga")
+	// fmt.Println("Upgrade hoga")
 	_, err = u.Upgrade(conn)
-	fmt.Println("Upgrade ho gayi", sessionKey)
+	// fmt.Println("Upgrade ho gayi", sessionKey)
 
 	if err != nil {
 		// handle error
@@ -156,9 +158,9 @@ func handleConnection(conn net.Conn, err error) {
 		countOpenFiles()
 
 	}
-	fmt.Println("CreateChannel")
+	// fmt.Println("CreateChannel")
 	CreateChannel(conn, sessionKey)
-	fmt.Println("Created Channel")
+	// fmt.Println("Created Channel")
 }
 
 func countOpenFiles() {
@@ -174,14 +176,30 @@ func countOpenFiles() {
 
 func listGoRotines() {
 	for {
+
 		goRotienes := runtime.NumGoroutine()
-		fmt.Println("goRotienes", goRotienes)
+		fmt.Println("goRotienes listGoRotines", goRotienes, "#", getGID())
+		time.Sleep(1000 * time.Millisecond)
 	}
 
 }
 
+func dummyGoRoutine() {
+	time.Sleep(30000 * time.Millisecond)
+}
+
+func getGID() uint64 {
+	b := make([]byte, 64)
+	b = b[:runtime.Stack(b, false)]
+	b = bytes.TrimPrefix(b, []byte("goroutine "))
+	b = b[:bytes.IndexByte(b, ' ')]
+	n, _ := strconv.ParseUint(string(b), 10, 64)
+	return n
+}
+
 func main() {
 	go listGoRotines()
+	fmt.Println("goRotiene Main", "#", getGID())
 	ln, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
 		log.Fatal(err)
