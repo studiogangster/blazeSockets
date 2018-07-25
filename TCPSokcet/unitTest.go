@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"runtime"
 	"sync"
 
 	"github.com/gobwas/ws"
@@ -146,7 +147,7 @@ func handleConnection(conn net.Conn, err error) {
 
 	fmt.Println("Upgrade hoga")
 	_, err = u.Upgrade(conn)
-	fmt.Println("Upgrade ho gayi")
+	fmt.Println("Upgrade ho gayi", sessionKey)
 
 	if err != nil {
 		// handle error
@@ -171,8 +172,16 @@ func countOpenFiles() {
 
 }
 
-func main() {
+func listGoRotines() {
+	for {
+		goRotienes := runtime.NumGoroutine()
+		fmt.Println("goRotienes", goRotienes)
+	}
 
+}
+
+func main() {
+	go listGoRotines()
 	ln, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
 		log.Fatal(err)
