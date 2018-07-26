@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	_ "net/http/pprof"
@@ -27,9 +26,24 @@ type Packet struct {
 
 // Channel wraps user connection.
 type Channel struct {
-	mutex      sync.Mutex
-	socketName string
-	conn       net.Conn // WebSocket connection
+	mutex          sync.Mutex
+	socketName     string
+	conn           net.Conn // WebSocket connection
+	fileDescriptor *netpoll.Desc
+}
+
+func (channel *Channel) close() {
+
+	SOCKETS.Remove(channel.socketName)
+	// Not interested in any event from this socket, Remove from netpoll/epoll/kqueue
+	poller.Stop(channel.fileDescriptor)
+	// Close the socket connection
+	channel.conn.Close()
+	// Remove the file descriptor associated with that socket
+	channel.fileDescriptor.Close()
+
+	fmt.Println("CLOSING SOCKET", channel.socketName)
+	return
 }
 
 func (channel *Channel) reader() {
@@ -46,48 +60,32 @@ func (channel *Channel) writer(wsFrame ws.Frame) {
 	// fmt.Println("Sending data to", channel.socketName, err)
 }
 
-func handleMessage(data []byte, sesion_key string) {
+func handleMessage(data []byte, sesionKey string) {
 
 }
 
-func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, desc *netpoll.Desc, channel *Channel) {
+func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, channel *Channel) {
 
 	defer func() {
 		channel.mutex.Unlock()
 	}()
 
 	channel.mutex.Lock()
-	// time.Sleep(2 * time.Second)
 
+	// CLOSE EVENT FROM TCP SOCKET
 	if ev&netpoll.EventReadHup != 0 {
-		poller.Stop(desc)
-		desc.Close()
-		channel.conn.Close()
-		SOCKETS.Remove(channel.socketName)
-		fmt.Println("CLOSING SOCKET", channel.socketName)
-		countOpenFiles()
+		channel.close()
 		return
 
 	}
 
-	header, err := ws.ReadHeader(channel.conn)
+	wsFrame, err := ws.ReadFrame(channel.conn)
 	if err != nil {
-		// handle error
-		poller.Stop(desc)
-		SOCKETS.Remove(channel.socketName)
 		return
 	}
-
-	payload := make([]byte, header.Length)
-	// time.Sleep(3 * time.Second)
-	_, err = io.ReadFull(channel.conn, payload)
-	if err != nil {
-		// handle error
-		return
-	}
-
-	if header.Masked {
-		ws.Cipher(payload, header.Mask, 0)
+	// Succesfuly read the payload from websokcet frame, now unmask it, if required
+	if wsFrame.Header.Masked {
+		ws.Cipher(wsFrame.Payload, wsFrame.Header.Mask, 0)
 	}
 	// fmt.Println("READ FROM", channel.socketName, string(payload))
 	// go handleMessage(payload, channel.socketName)
@@ -96,12 +94,10 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, des
 
 func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 
-	conn := channel.conn
-	desc := netpoll.Must(netpoll.HandleRead(conn))
 	// Below is async call, that return the functions and callback gets executed when event occurs!
-	poller.Start(desc, func(ev netpoll.Event) {
+	poller.Start(channel.fileDescriptor, func(ev netpoll.Event) {
 		// fmt.Println("Recived Message", channel.socketName)
-		go handleOnNetPollReadEventrigger(ev, poller, desc, channel)
+		go handleOnNetPollReadEventrigger(ev, poller, channel)
 	})
 
 }
@@ -118,9 +114,11 @@ var lock = sync.RWMutex{}
 
 // CreateChannel creates a channel from connection for read and write functionality!
 func CreateChannel(conn net.Conn, sessionKey string) {
+
 	channel := &Channel{
-		socketName: sessionKey,
-		conn:       conn,
+		socketName:     sessionKey,
+		conn:           conn,
+		fileDescriptor: netpoll.Must(netpoll.HandleRead(conn)),
 	}
 	SOCKETS.Set(channel.socketName, channel)
 	reigisterReadEvent(poller, channel)
