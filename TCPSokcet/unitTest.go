@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	_ "net/http/pprof"
 	"runtime"
 	"strconv"
 	"sync"
@@ -13,11 +14,11 @@ import (
 
 	"github.com/gobwas/ws"
 	"github.com/mailru/easygo/netpoll"
+	cMap "github.com/orcaman/concurrent-map"
 )
 
-var SOCKETS = make(map[string]*Channel)
-
 var poller = createPoller()
+var SOCKETS = cMap.New()
 
 // Packet is the application data
 type Packet struct {
@@ -26,69 +27,79 @@ type Packet struct {
 
 // Channel wraps user connection.
 type Channel struct {
-	socket_name string
-	conn        net.Conn // WebSocket connection.
-	// send chan Packet // Outgoing packets queue.
-
+	mutex      sync.Mutex
+	socketName string
+	conn       net.Conn // WebSocket connection
 }
 
 func (channel *Channel) reader() {
-
 	for {
 		b := make([]byte, 100)
 		channel.conn.Read(b)
-		// fmt.Println("Byte", string(n))
 	}
 }
 
-func (channel *Channel) writer() {
-	// fmt.Println("go writer ready")
+func (channel *Channel) writer(wsFrame ws.Frame) {
+
+	// ws.WriteHeader(channel.conn, ws.NewTextFrame("Dummy from").Header)
+	ws.WriteFrame(channel.conn, wsFrame)
+	// fmt.Println("Sending data to", channel.socketName, err)
 }
 
 func handleMessage(data []byte, sesion_key string) {
-	// fmt.Println("HandleMessage", string(data))
+
+}
+
+func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, desc *netpoll.Desc, channel *Channel) {
+
+	defer func() {
+		channel.mutex.Unlock()
+	}()
+
+	channel.mutex.Lock()
+	// time.Sleep(2 * time.Second)
+
+	if ev&netpoll.EventReadHup != 0 {
+		poller.Stop(desc)
+		channel.conn.Close()
+		SOCKETS.Remove(channel.socketName)
+		fmt.Println("CLOSING SOCKET", channel.socketName)
+		countOpenFiles()
+
+	}
+
+	header, err := ws.ReadHeader(channel.conn)
+	if err != nil {
+		// handle error
+		poller.Stop(desc)
+		SOCKETS.Remove(channel.socketName)
+		return
+	}
+
+	payload := make([]byte, header.Length)
+	// time.Sleep(3 * time.Second)
+	_, err = io.ReadFull(channel.conn, payload)
+	if err != nil {
+		// handle error
+		return
+	}
+
+	if header.Masked {
+		ws.Cipher(payload, header.Mask, 0)
+	}
+	// fmt.Println("READ FROM", channel.socketName, string(payload))
+	// go handleMessage(payload, channel.socketName)
+
 }
 
 func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
+
 	conn := channel.conn
 	desc := netpoll.Must(netpoll.HandleRead(conn))
 	// Below is async call, that return the functions and callback gets executed when event occurs!
 	poller.Start(desc, func(ev netpoll.Event) {
-		fmt.Println("goRotiene reigisterReadEvent", "#", getGID())
-		// fmt.Println("Async Callback")
-		if ev&netpoll.EventReadHup != 0 {
-			poller.Stop(desc)
-			conn.Close()
-			countOpenFiles()
-			// fmt.Println("Data Socket Closed" + channel.socket_name)
-			return
-		}
-
-		header, err := ws.ReadHeader(conn)
-		if err != nil {
-			// handle error
-			poller.Stop(desc)
-			conn.Close()
-			fmt.Println("Stopping poller", err)
-			// countOpenFiles()
-			// fmt.Println("WRONG H", channel.socket_name)
-			return
-		}
-		payload := make([]byte, header.Length)
-
-		_, err = io.ReadFull(conn, payload)
-		if err != nil {
-			// handle error
-			// poller.Stop(desc)
-			// conn.Close()
-			// countOpenFiles()
-			fmt.Println("Stopping poller", err)
-			return
-		}
-		if header.Masked {
-			ws.Cipher(payload, header.Mask, 0)
-		}
-		// go handleMessage(payload, channel.socket_name)
+		// fmt.Println("Recived Message", channel.socketName)
+		go handleOnNetPollReadEventrigger(ev, poller, desc, channel)
 	})
 
 }
@@ -105,27 +116,37 @@ var lock = sync.RWMutex{}
 
 // CreateChannel creates a channel from connection for read and write functionality!
 func CreateChannel(conn net.Conn, sessionKey string) {
-
 	channel := &Channel{
-		socket_name: sessionKey,
-		conn:        conn,
+		socketName: sessionKey,
+		conn:       conn,
 	}
-
-	lock.Lock()
-	SOCKETS[sessionKey] = channel
-	lock.Unlock()
-	// fmt.Println("SOCKET", sessionKey)
+	SOCKETS.Set(channel.socketName, channel)
 	reigisterReadEvent(poller, channel)
 
 }
 
+func broadCastSync(data []byte) {
+	binaryFrame := ws.NewBinaryFrame(data)
+	for item := range SOCKETS.Iter() {
+		// fmt.Println("ITEM", item.Key)
+		time.Sleep(2 * time.Second)
+		channel, ok := item.Val.(*Channel)
+		if ok {
+			channel.writer(binaryFrame)
+		} else {
+			fmt.Println("Coudn't convet")
+		}
+	}
+
+}
+
 func handleConnection(conn net.Conn, err error) {
-	fmt.Println("goRotiene handleConnection", "#", getGID())
+
 	defer func() {
 		// countOpenFiles()
 		if r := recover(); r != nil {
 			fmt.Println("DEFER", r)
-			// fmt.Println("Recovered in f", r)
+
 		}
 	}()
 
@@ -141,8 +162,6 @@ func handleConnection(conn net.Conn, err error) {
 	u := ws.Upgrader{
 		OnHeader: func(key, value []byte) (err error, code int) {
 			sessionKey = string(value)
-			// time.Sleep(5 * time.Second)
-			// fmt.Println("Sleep ho gayi")
 			return
 		},
 	}
@@ -158,9 +177,8 @@ func handleConnection(conn net.Conn, err error) {
 		countOpenFiles()
 
 	}
-	// fmt.Println("CreateChannel")
 	CreateChannel(conn, sessionKey)
-	// fmt.Println("Created Channel")
+
 }
 
 func countOpenFiles() {
@@ -176,16 +194,20 @@ func countOpenFiles() {
 
 func listGoRotines() {
 	for {
-
-		goRotienes := runtime.NumGoroutine()
-		fmt.Println("goRotienes listGoRotines", goRotienes, "#", getGID())
+		start := time.Now()
+		broadCastSync([]byte("Sample Data"))
+		t := time.Now()
+		elapsed := t.Sub(start)
+		fmt.Println("Broadcast Time", elapsed)
 		time.Sleep(1000 * time.Millisecond)
 	}
+	// for {
 
-}
+	// 	goRotienes := runtime.NumGoroutine()
+	// 	fmt.Println("goRotienes listGoRotines", goRotienes, "#", getGID())
+	// 	time.Sleep(1000 * time.Millisecond)
+	// }
 
-func dummyGoRoutine() {
-	time.Sleep(30000 * time.Millisecond)
 }
 
 func getGID() uint64 {
@@ -198,6 +220,7 @@ func getGID() uint64 {
 }
 
 func main() {
+
 	go listGoRotines()
 	fmt.Println("goRotiene Main", "#", getGID())
 	ln, err := net.Listen("tcp", "0.0.0.0:8080")
@@ -209,7 +232,7 @@ func main() {
 
 	for {
 		conn, err := ln.Accept()
-		fmt.Println("Accepted socket")
+
 		go handleConnection(conn, err)
 	}
 }
