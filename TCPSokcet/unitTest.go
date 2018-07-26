@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -150,10 +151,11 @@ func handleConnection(conn net.Conn, err error) {
 		}
 	}()
 
+	// conn.SetDeadline(time.Now().Add(0 * time.Microsecond))
+
 	if err != nil {
 		fmt.Println("Error initializing socket")
 		conn.Close()
-		countOpenFiles()
 		return
 		// handle error
 	}
@@ -173,8 +175,11 @@ func handleConnection(conn net.Conn, err error) {
 	if err != nil {
 		// handle error
 		fmt.Println("Error upgrading socket", err)
-		conn.Close()
-		countOpenFiles()
+		err = conn.Close()
+		if err != nil {
+			fmt.Println("Error", err)
+		}
+		return
 
 	}
 	CreateChannel(conn, sessionKey)
@@ -221,9 +226,11 @@ func getGID() uint64 {
 
 func main() {
 
+	localAddr := flag.String("l", "localhost:8080", "local address")
+	addr, err := net.ResolveTCPAddr("tcp", *localAddr)
 	go listGoRotines()
 	fmt.Println("goRotiene Main", "#", getGID())
-	ln, err := net.Listen("tcp", "0.0.0.0:8080")
+	ln, err := net.ListenTCP("tcp", addr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -231,7 +238,12 @@ func main() {
 	fmt.Println("Spinning TCP Server")
 
 	for {
+
 		conn, err := ln.Accept()
+		if conn == nil {
+			continue
+		}
+
 		go handleConnection(conn, err)
 	}
 }
