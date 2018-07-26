@@ -63,7 +63,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, des
 		poller.Stop(desc)
 		channel.conn.Close()
 		SOCKETS.Remove(channel.socketName)
-		// fmt.Println("CLOSING SOCKET", channel.socketName)
+		fmt.Println("CLOSING SOCKET", channel.socketName)
 		countOpenFiles()
 
 	}
@@ -232,7 +232,6 @@ func main() {
 
 	for {
 		conn, err := ln.Accept()
-
 		go handleConnection(conn, err)
 	}
 }
