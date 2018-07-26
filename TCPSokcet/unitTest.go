@@ -61,6 +61,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, des
 
 	if ev&netpoll.EventReadHup != 0 {
 		poller.Stop(desc)
+		desc.Close()
 		channel.conn.Close()
 		SOCKETS.Remove(channel.socketName)
 		fmt.Println("CLOSING SOCKET", channel.socketName)
