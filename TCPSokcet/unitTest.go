@@ -65,6 +65,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, des
 		SOCKETS.Remove(channel.socketName)
 		fmt.Println("CLOSING SOCKET", channel.socketName)
 		countOpenFiles()
+		return
 
 	}
 
