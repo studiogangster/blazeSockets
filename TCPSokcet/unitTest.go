@@ -233,10 +233,18 @@ func getGID() uint64 {
 }
 
 func main() {
+	PORTS := []string{"8080", "8081", "8082", "8083", "8084"}
+	for _, PORT := range PORTS {
+		go startServer(PORT)
+	}
+}
+
+func startServer(PORT string) {
 
 	go listGoRotines()
 	fmt.Println("goRotiene Main", "#", getGID())
-	ln, err := net.Listen("tcp", "0.0.0.0:8080")
+	ln, err := net.Listen("tcp", "0.0.0.0:"+PORT)
+	fmt.Println("Listening on", PORT)
 	if err != nil {
 		log.Fatal(err)
 	}
