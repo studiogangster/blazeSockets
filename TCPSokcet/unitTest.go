@@ -63,7 +63,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, des
 		poller.Stop(desc)
 		channel.conn.Close()
 		SOCKETS.Remove(channel.socketName)
-		fmt.Println("CLOSING SOCKET", channel.socketName)
+		// fmt.Println("CLOSING SOCKET", channel.socketName)
 		countOpenFiles()
 
 	}
@@ -129,7 +129,7 @@ func broadCastSync(data []byte) {
 	binaryFrame := ws.NewBinaryFrame(data)
 	for item := range SOCKETS.Iter() {
 		// fmt.Println("ITEM", item.Key)
-		time.Sleep(2 * time.Second)
+		// time.Sleep(2 * time.Second)
 		channel, ok := item.Val.(*Channel)
 		if ok {
 			channel.writer(binaryFrame)
