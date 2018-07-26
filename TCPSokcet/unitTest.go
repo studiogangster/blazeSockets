@@ -233,10 +233,12 @@ func getGID() uint64 {
 }
 
 func main() {
-	PORTS := []string{"8080", "8081", "8082", "8083", "8084"}
+	PORTS := []string{"8081", "8082", "8083", "8084"}
 	for _, PORT := range PORTS {
 		go startServer(PORT)
 	}
+
+	startServer("8080")
 }
 
 func startServer(PORT string) {
