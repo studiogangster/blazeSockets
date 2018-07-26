@@ -43,6 +43,8 @@ func (channel *Channel) close() {
 	channel.fileDescriptor.Close()
 
 	fmt.Println("CLOSING SOCKET", channel.socketName)
+
+	channel = nil
 	return
 }
 
@@ -67,9 +69,14 @@ func handleMessage(data []byte, sesionKey string) {
 func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, channel *Channel) {
 
 	defer func() {
-		channel.mutex.Unlock()
-	}()
+		if channel != nil {
+			channel.mutex.Unlock()
+		}
 
+	}()
+	if channel == nil {
+		return
+	}
 	channel.mutex.Lock()
 
 	// CLOSE EVENT FROM TCP SOCKET
