@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -204,7 +203,7 @@ func listGoRotines() {
 		t := time.Now()
 		elapsed := t.Sub(start)
 		fmt.Println("Broadcast Time", elapsed)
-		time.Sleep(1000 * time.Millisecond)
+		time.Sleep(4000 * time.Millisecond)
 	}
 	// for {
 
@@ -226,11 +225,9 @@ func getGID() uint64 {
 
 func main() {
 
-	localAddr := flag.String("l", "localhost:8080", "local address")
-	addr, err := net.ResolveTCPAddr("tcp", *localAddr)
 	go listGoRotines()
 	fmt.Println("goRotiene Main", "#", getGID())
-	ln, err := net.ListenTCP("tcp", addr)
+	ln, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
 		log.Fatal(err)
 	}
