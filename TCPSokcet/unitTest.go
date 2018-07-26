@@ -168,6 +168,7 @@ func handleConnection(conn net.Conn, err error) {
 	}
 
 	// fmt.Println("Upgrade hoga")
+	conn.SetDeadline(time.Now().Add(3 * time.Second))
 	_, err = u.Upgrade(conn)
 	// fmt.Println("Upgrade ho gayi", sessionKey)
 
