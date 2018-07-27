@@ -43,7 +43,10 @@ func (channel *Channel) close() {
 	// Not interested in any event from this socket, Remove from netpoll/epoll/kqueue
 	poller.Stop(channel.fileDescriptor)
 	// Close the socket connection
+	defer func() { channel.mutex.Unlock() }()
+	channel.mutex.Lock()
 	channel.conn.Close()
+
 	// Remove the file descriptor associated with that socket
 	channel.fileDescriptor.Close()
 
@@ -68,6 +71,7 @@ func handleMessage(data []byte, sesionKey string) {
 
 }
 
+// Handle read(), close() event on a socket, when netpoller informs the socket is read ready. This happens in it's own goroutine
 func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, channel *Channel) {
 
 	defer func() {
