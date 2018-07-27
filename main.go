@@ -3,5 +3,7 @@ package main
 import bws "blazesockets/websockets"
 
 func main() {
-	bws.StartServer(8080)
+	bws.StartServer(bws.ServerConfig{
+		PORT: 8080,
+	})
 }

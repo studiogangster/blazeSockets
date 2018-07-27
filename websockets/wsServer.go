@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	_ "net/http/pprof"
 	"runtime"
 	"strconv"
 	"sync"
@@ -36,6 +35,7 @@ type Channel struct {
 	fileDescriptor *netpoll.Desc
 }
 
+// TODO Handle Edge case for parallel execution and deadlock
 // Channel.close() is used to gracefully close the connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
 func (channel *Channel) close() {
 
@@ -61,9 +61,7 @@ func (channel *Channel) reader() {
 }
 
 func (channel *Channel) writer(wsFrame ws.Frame) {
-	// ws.WriteHeader(channel.conn, ws.NewTextFrame("Dummy from").Header)
 	ws.WriteFrame(channel.conn, wsFrame)
-	// fmt.Println("Sending data to", channel.socketName, err)
 }
 
 func handleMessage(data []byte, sesionKey string) {
@@ -230,23 +228,18 @@ func getGID() uint64 {
 
 func startServer(PORT string) {
 
-	go listGoRotines()
-
 	ln, err := net.Listen("tcp", "0.0.0.0:"+PORT)
-	fmt.Println("Listening on", PORT)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Spinning TCP Server")
+	log.Println("TCP Server", "Listening on PORT:", PORT)
 
 	for {
-
 		conn, err := ln.Accept()
 		if conn == nil {
 			continue
 		}
-
+		log.Println("New TCP Connection accepted")
 		go handleConnection(conn, err)
 	}
 }
