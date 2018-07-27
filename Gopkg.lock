@@ -31,6 +31,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/orcaman/concurrent-map"
+  packages = ["."]
+  revision = "b28018939af9022337862b94a463abb18abb3e0e"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
@@ -38,6 +44,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "281b6471a77a8e61f96841a8f00670e0b524d07fb02d82bec3226d8e0b74f5de"
+  inputs-digest = "dbf44d5d880da99d29fa98ae23fd572869bb9211ba83def13037b699bd4d5b6f"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,4 +1,4 @@
-package main
+package websockets
 
 import (
 	"bytes"
@@ -16,15 +16,19 @@ import (
 	cMap "github.com/orcaman/concurrent-map"
 )
 
+// Creates a netpoller (epoll/kqueue) on start up, where all the sockets that are interested resides!
 var poller = createPoller()
+
+// SOCKETS are concurrent hashmap that maps <socketName, *socket>
 var SOCKETS = cMap.New()
 
-// Packet is the application data
-type Packet struct {
-	data string
+// ServerConfig is the configuration for server
+type ServerConfig struct {
+	PORT       int
+	enableLogs bool
 }
 
-// Channel wraps user connection.
+// Channel is a wrapper around websocket, that encapsulates a mutex(for locking), socketName, underlying connection, and fildescriptor associated with the socket.
 type Channel struct {
 	mutex          sync.Mutex
 	socketName     string
@@ -32,6 +36,7 @@ type Channel struct {
 	fileDescriptor *netpoll.Desc
 }
 
+// Channel.close() is used to gracefully close the connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
 func (channel *Channel) close() {
 
 	SOCKETS.Remove(channel.socketName)
@@ -56,7 +61,6 @@ func (channel *Channel) reader() {
 }
 
 func (channel *Channel) writer(wsFrame ws.Frame) {
-
 	// ws.WriteHeader(channel.conn, ws.NewTextFrame("Dummy from").Header)
 	ws.WriteFrame(channel.conn, wsFrame)
 	// fmt.Println("Sending data to", channel.socketName, err)
@@ -100,7 +104,6 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 }
 
 func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
-
 	// Below is async call, that return the functions and callback gets executed when event occurs!
 	poller.Start(channel.fileDescriptor, func(ev netpoll.Event) {
 		// fmt.Println("Recived Message", channel.socketName)
@@ -214,13 +217,6 @@ func listGoRotines() {
 		fmt.Println("Broadcast Time", elapsed)
 		time.Sleep(4000 * time.Millisecond)
 	}
-	// for {
-
-	// 	goRotienes := runtime.NumGoroutine()
-	// 	fmt.Println("goRotienes listGoRotines", goRotienes, "#", getGID())
-	// 	time.Sleep(1000 * time.Millisecond)
-	// }
-
 }
 
 func getGID() uint64 {
@@ -232,19 +228,10 @@ func getGID() uint64 {
 	return n
 }
 
-func main() {
-	PORTS := []string{"8081", "8082", "8083", "8084"}
-	for _, PORT := range PORTS {
-		go startServer(PORT)
-	}
-
-	startServer("8080")
-}
-
 func startServer(PORT string) {
 
 	go listGoRotines()
-	fmt.Println("goRotiene Main", "#", getGID())
+
 	ln, err := net.Listen("tcp", "0.0.0.0:"+PORT)
 	fmt.Println("Listening on", PORT)
 	if err != nil {
@@ -262,4 +249,8 @@ func startServer(PORT string) {
 
 		go handleConnection(conn, err)
 	}
+}
+
+func StartServer(config ServerConfig) {
+	startServer(strconv.Itoa(config.PORT))
 }
