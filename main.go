@@ -1,9 +1,14 @@
 package main
 
-import bws "blazesockets/websockets"
+import (
+	bws "blazesockets/websockets"
+	"time"
+)
 
 func main() {
+
 	bws.StartServer(bws.ServerConfig{
-		PORT: 8080,
+		Handshaketimeout: 2000 * time.Millisecond,
+		PORT:             8080,
 	})
 }
