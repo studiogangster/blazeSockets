@@ -1,15 +1,15 @@
-###Dependency Requirement:
+#Dependency Requirement:
     dep
     golang 
 
 
-###Installation Instructions:
+#Installation Instructions:
     dep init
     git clone https://github.com/rounak316/blazeSockets.git
     dep ensure
 
 
-###Usage Instructions:
+#Usage Instructions:
     package main
     import bws "blazesockets/websockets"
     func main() {
