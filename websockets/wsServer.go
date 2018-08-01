@@ -26,8 +26,7 @@ var SOCKETS = cMap.New()
 
 // ServerConfig is the configuration for server
 type ServerConfig struct {
-	PORT int
-
+	PORT             int
 	EnableLogs       bool
 	Handshaketimeout time.Duration
 }
@@ -274,6 +273,6 @@ func startServer(PORT string, timeout time.Duration) {
 }
 
 func StartServer(config ServerConfig) {
-	log.EnableLogging(config.enableLogs)
+	log.EnableLogging(config.EnableLogs)
 	startServer(strconv.Itoa(config.PORT), config.Handshaketimeout)
 }

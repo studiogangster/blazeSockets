@@ -11,7 +11,8 @@ type LogConfig struct {
 	LogsEnabled bool
 }
 
-func (lConfig LogConfig) EnableLogging(logging bool) {
+func (lConfig *LogConfig) EnableLogging(logging bool) {
+	log.Println("LOGGING", logging)
 	lConfig.LogsEnabled = logging
 }
 
