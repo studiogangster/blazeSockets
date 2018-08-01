@@ -65,12 +65,14 @@ func (channel *Channel) reader() {
 	}
 }
 
+// Writer is used to push websocket frame through the socket
 func (channel *Channel) writer(wsFrame ws.Frame) {
 	err := ws.WriteFrame(channel.conn, wsFrame)
 	log.Println(wsLogs.WS_CLIENT_LOGS, ":", channel.socketName, "Coudn't write websocket frame to socket", "Error:", err)
 
 }
 
+// Handling of message recieved from the socket! sessionKey is the socket key, and data contains the byte array of recieved socket frame
 func handleMessage(data []byte, sesionKey string) {
 	fmt.Println(wsLogs.WS_CLIENT_LOGS, "SESSION_KEY:", sesionKey, "READ_MESSAGE:", string(data))
 }
@@ -85,7 +87,6 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 		channel.close()
 		channel.mutex.Unlock()
 		return
-
 	}
 
 	wsFrame, err := ws.ReadFrame(channel.conn)
@@ -105,6 +106,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 
 }
 
+// Registering epoll event/ kevent on the queue, and invoke a goroutine once it gets signal, that there is something available for reading
 func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 	// Below is async call, that return the functions and callback gets executed when event occurs!
 
