@@ -11,6 +11,10 @@ type LogConfig struct {
 	LogsEnabled bool
 }
 
+func (lConfig LogConfig) EnableLogging(logging bool) {
+	lConfig.LogsEnabled = logging
+}
+
 func (lConfig LogConfig) Println(args ...interface{}) {
 	if lConfig.LogsEnabled == true {
 		log.Println(args)

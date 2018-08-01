@@ -16,9 +16,7 @@ import (
 )
 
 // Log Configurator
-var log = wsLogs.LogConfig{
-	LogsEnabled: false,
-}
+var log = wsLogs.LogConfig{}
 
 // Creates a netpoller (epoll/kqueue) on start up, where all the sockets that are interested resides!
 var poller = createPoller()
@@ -28,8 +26,9 @@ var SOCKETS = cMap.New()
 
 // ServerConfig is the configuration for server
 type ServerConfig struct {
-	PORT             int
-	enableLogs       bool
+	PORT int
+
+	EnableLogs       bool
 	Handshaketimeout time.Duration
 }
 
@@ -275,5 +274,6 @@ func startServer(PORT string, timeout time.Duration) {
 }
 
 func StartServer(config ServerConfig) {
+	log.EnableLogging(config.enableLogs)
 	startServer(strconv.Itoa(config.PORT), config.Handshaketimeout)
 }
