@@ -3,9 +3,7 @@ package websockets
 import (
 	wsLogs "blazesockets/logs"
 	"bytes"
-	"crypto/tls"
 	"fmt"
-	"log"
 	"net"
 	"runtime"
 	"strconv"
@@ -16,6 +14,11 @@ import (
 	"github.com/mailru/easygo/netpoll"
 	cMap "github.com/orcaman/concurrent-map"
 )
+
+// Log Configurator
+var log = wsLogs.LogConfig{
+	LogsEnabled: false,
+}
 
 // Creates a netpoller (epoll/kqueue) on start up, where all the sockets that are interested resides!
 var poller = createPoller()
@@ -100,6 +103,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 	if wsFrame.Header.Masked {
 		ws.Cipher(wsFrame.Payload, wsFrame.Header.Mask, 0)
 	}
+
 	// Payload has the read data
 
 	handleMessage(wsFrame.Payload, channel.socketName)
@@ -127,6 +131,7 @@ func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 
 }
 
+// Initialze
 func createPoller() netpoll.Poller {
 	poller, err := netpoll.New(nil)
 	if err != nil {
@@ -251,17 +256,10 @@ func getGID() uint64 {
 }
 
 func startServer(PORT string, timeout time.Duration) {
-	cer, err := tls.LoadX509KeyPair("server.crt", "server.key")
+
+	ln, err := net.Listen("tcp", "0.0.0.0:"+PORT)
 	if err != nil {
 		log.Println(err)
-		return
-	}
-
-	config := &tls.Config{Certificates: []tls.Certificate{cer}}
-
-	ln, err := tls.Listen("tcp", "0.0.0.0:"+PORT, config)
-	if err != nil {
-		log.Fatal(err)
 	}
 	log.Println("TCP Server", "Listening on PORT:", PORT)
 
