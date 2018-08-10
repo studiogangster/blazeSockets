@@ -23,6 +23,5 @@ func configure() {
 }
 
 func StartServer() {
-
 	startServer()
 }
