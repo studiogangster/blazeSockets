@@ -2,16 +2,31 @@ package main
 
 import (
 	bws "blazesockets/websockets"
-	"time"
+	"bytes"
+	"encoding/binary"
+	"fmt"
 )
 
 func main() {
 
-	bws.ServerConfig{
-		Handshaketimeout: 2000 * time.Millisecond,
-		EnableLogs:       true,
-		PORT:             "8080",
-	}.Configure()
+	bs := make([]byte, 2)
+	binary.LittleEndian.PutUint16(bs, 1)
+	fmt.Println(bs)
+	num := binary.LittleEndian.Uint16(bs)
+	fmt.Println(num)
 
-	bws.StartServer()
+	msg := bws.CreateFrame("Hello")
+	fmt.Println(msg.Bytes())
+
+	r := bytes.NewReader(msg.Bytes())
+
+	bws.ParseFrame(r)
+
+	// bws.ServerConfig{
+	// 	Handshaketimeout: 2000 * time.Millisecond,
+	// 	EnableLogs:       true,
+	// 	PORT:             "8080",
+	// }.Configure()
+
+	// bws.StartServer()
 }

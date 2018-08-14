@@ -111,7 +111,7 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 	}
 
 	SOCKETS.Set(channel.socketName, channel)
-	// reigisterReadEvent(poller, channel)
+	reigisterReadEvent(poller, channel)
 
 }
 
