@@ -11,7 +11,9 @@ import (
 
 // Channel is a wrapper around websocket, that encapsulates a mutex(for locking), socketName, underlying connection, and fildescriptor associated with the socket.
 type Channel struct {
-	mutex          sync.Mutex
+	messageFrame   MessageFrame
+	engaged        bool
+	mutex          sync.RWMutex
 	socketName     string
 	conn           net.Conn // WebSocket connection
 	fileDescriptor *netpoll.Desc

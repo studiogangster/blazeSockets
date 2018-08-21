@@ -8,11 +8,15 @@ import (
 	"runtime"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gobwas/ws"
 	"github.com/mailru/easygo/netpoll"
 )
+
+var COUNT int
+var R_COUNT int
 
 type PingBraodcastIteration struct {
 	sync.Mutex
@@ -42,47 +46,89 @@ func (pingStruct PingBraodcastIteration) broadcastPing() {
 	pingStruct.broadcastPing()
 }
 
+var rLocks int64
+
+var wLocks int64
+
+func PollStatus() {
+
+	for {
+		fmt.Println("rLocks", atomic.LoadInt64(&rLocks))
+		fmt.Println("wLocks", atomic.LoadInt64(&wLocks))
+		fmt.Println("W_COUNT", COUNT)
+		fmt.Println("R_COUNT", R_COUNT)
+
+		time.Sleep(2 * time.Second)
+	}
+
+}
+
 // Handle read(), close() event on a socket, when netpoller informs the socket is read ready. This happens in it's own goroutine
 func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, channel *Channel) {
 
+	channel.mutex.RLock()
+	atomic.AddInt64(&rLocks, 1)
+	if channel.engaged == true {
+		// fmt.Println("GoRoutine Already Engaged in Doing Task")
+		// Already a gorotine is reading the data from same channel, so return
+		channel.mutex.RUnlock()
+		atomic.AddInt64(&rLocks, -1)
+		return
+	} else {
+		fmt.Println("GoRoutine Assigned Task")
+		channel.mutex.RUnlock()
+		atomic.AddInt64(&rLocks, -1)
+	}
+
 	channel.mutex.Lock()
+	channel.engaged = true
+	channel.mutex.Unlock()
 
 	// CLOSE EVENT FROM TCP SOCKET
 	if ev&netpoll.EventReadHup != 0 {
 		channel.close()
-		channel.mutex.Unlock()
 		return
 	}
 
-	wsFrame, err := ws.ReadFrame(channel.conn)
+	ReadMessageFrame(channel)
+	fmt.Println(channel.messageFrame)
+	time.Sleep(4 * time.Second)
+	// channel.conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
+	// n, _ := io.ReadFull(channel.conn, data)
+	// channel.conn.SetReadDeadline(time.Time{})
+	channel.mutex.Lock()
+	channel.engaged = false
+	atomic.AddInt64(&wLocks, -1)
 	channel.mutex.Unlock()
 
-	if err != nil {
-		return
-	}
+	// channel.buffer.Write(data[:n])
+	// fmt.Println(channel.buffer.Len(), "Length Of Bufer")
 
-	// Succesfuly read the payload from websokcet frame, now unmask it, if required
-	if wsFrame.Header.Masked {
-		ws.Cipher(wsFrame.Payload, wsFrame.Header.Mask, 0)
-	}
+	// if channel.buffer.Len() >= 5 {
 
-	// Payload has the read data
-	handleMessage(wsFrame.Payload, channel)
+	// 	fmt.Println("Data", channel.buffer.Bytes())
+	// 	channel.buffer.Reset()
+	// } else {
+	// 	fmt.Println("Waiting for data to be completed", channel.buffer.Len())
+	// }
+
+	// io.ReadFull(channel.conn, data)
 
 }
 
 // Registering epoll event/ kevent on the queue, and invoke a goroutine once it gets signal, that there is something available for reading
 func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 	// Below is async call, that return the functions and callback gets executed when event occurs!
-
+	// COUNTER := 0
 	err := poller.Start(channel.fileDescriptor, func(ev netpoll.Event) {
-		log.Println(wsLogs.WS_CLIENT_LOGS, ":", channel.socketName, "Socket ready for read")
-		getGID()
+		// COUNTER++
+		// fmt.Println(COUNTER)
 		go handleOnNetPollReadEventrigger(ev, poller, channel)
 	})
 
 	if err != nil {
 		channel.mutex.Lock()
+
 		channel.close()
 		channel.mutex.Unlock()
 		log.Println(wsLogs.WS_SERVER_LOGS, ":", "reigisterReadEvent()", "REGISTERING", channel.socketName, "Error:", err)
@@ -105,6 +151,7 @@ func createPoller() netpoll.Poller {
 func CreateChannel(conn *net.Conn, sessionKey string) {
 
 	channel := &Channel{
+		engaged:        false,
 		socketName:     sessionKey,
 		conn:           *conn,
 		fileDescriptor: netpoll.Must(netpoll.HandleRead(*conn)),
@@ -146,16 +193,16 @@ func handleConnection(conn net.Conn, err error) {
 		// handle error
 	}
 
-	sessionKey := ""
-	u := ws.Upgrader{
-		OnHeader: func(key, value []byte) (err error, code int) {
-			sessionKey = string(value)
-			return
-		},
-	}
+	// sessionKey := ""
+	// u := ws.Upgrader{
+	// 	OnHeader: func(key, value []byte) (err error, code int) {
+	// 		sessionKey = string(value)
+	// 		return
+	// 	},
+	// }
 
-	log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrading()")
-	_, err = u.Upgrade(conn)
+	// log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrading()")
+	// _, err = u.Upgrade(conn)
 	if err != nil {
 		// handle error
 		fmt.Println("Error upgrading socket", err)
@@ -172,7 +219,7 @@ func handleConnection(conn net.Conn, err error) {
 	conn.SetDeadline(time.Time{})
 	log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrade()", "Success:")
 
-	CreateChannel(&conn, sessionKey)
+	CreateChannel(&conn, "sessionKey")
 
 }
 

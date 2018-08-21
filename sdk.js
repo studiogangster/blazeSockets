@@ -65,6 +65,7 @@ class Tilbridge {
 }
 let a = 21321
 let tilBridge = new Tilbridge()
+
 tilBridge.addToHomeScreen( {} , ()=>{
     console.log('Success', a )
 
