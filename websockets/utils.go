@@ -92,7 +92,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 
 	ReadMessageFrame(channel)
 	fmt.Println(channel.messageFrame)
-	time.Sleep(4 * time.Second)
+	// time.Sleep(4 * time.Second)
 	// channel.conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
 	// n, _ := io.ReadFull(channel.conn, data)
 	// channel.conn.SetReadDeadline(time.Time{})
@@ -155,6 +155,9 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 		socketName:     sessionKey,
 		conn:           *conn,
 		fileDescriptor: netpoll.Must(netpoll.HandleRead(*conn)),
+		messageFrame: MessageFrame{
+			MessageLength: make([]byte, 2),
+		},
 	}
 
 	SOCKETS.Set(channel.socketName, channel)
