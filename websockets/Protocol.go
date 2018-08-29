@@ -262,7 +262,6 @@ func extractBuffer(channel *Channel, bytes_read int, buffer []byte) {
 
 			// Handle Rest of the incomplete Message
 			bytes_read = channel.messageFrame.MessageData.Len()
-			time.Sleep(4 * time.Second)
 
 			for {
 				n, err := channel.messageFrame.MessageData.Read(buffer)
@@ -287,39 +286,11 @@ func extractBuffer(channel *Channel, bytes_read int, buffer []byte) {
 	}
 }
 
-//TODO: Complete the edgecases
-func ParseFrame(channel *Channel) {
-	// Buffer to read from tcp sokcet directly
-	
-
-	for {
-		buffer := make([]byte, 3)
-		// TODO: Remove while in production
-		time.Sleep(300 * time.Millisecond)
-
-		// channel.conn.SetReadDeadline(time.Now().Add(1 * time.Second))
-		channel.conn.SetReadDeadline(time.Now().Add(time.Millisecond * 300))
-		// Read from TCP_BUFFER to buffer
-		bytes_read, err := channel.conn.Read(buffer)
-
-		if err != nil {
-			fmt.Println("Message EOF / TimeOut")
-			return
-		}
-		// Assign the data in channel.MessageFrame: 1st Three Bytes in metaData, and every remaining thing in frameData
-		extractBuffer(channel, bytes_read, buffer)
-
-	}
-
-}
-
 func NewParseFrame(channel *Channel) {
 	// Buffer to read from tcp socket directly
 
 	buffer := make([]byte, 2)
 	for {
-		// TODO: Remove while in production
-		time.Sleep(300 * time.Millisecond)
 
 		// channel.conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 		channel.conn.SetReadDeadline(time.Now().Add(time.Millisecond * 300))
@@ -327,11 +298,13 @@ func NewParseFrame(channel *Channel) {
 		bytes_read, err := channel.conn.Read(buffer)
 
 		if err != nil {
+			poller.Resume(channel.fileDescriptor)
 			fmt.Println("Message EOF / TimeOut")
 			return
 		}
 
-		if bytes_read == 0{
+		if bytes_read == 0 {
+			poller.Resume(channel.fileDescriptor)
 			fmt.Println("No Bytes Left To Read")
 			return
 		}
@@ -339,13 +312,10 @@ func NewParseFrame(channel *Channel) {
 		channel.messageFrame.MessageData.Write(buffer[:bytes_read])
 		// TODO: Explain this
 		for {
-			
-			// fmt.Println("for: MESSAGE_DATA_FRAME" ,channel.messageFrame.MessageData.Len() , META_BYTES)
-			// fmt.Println("for: MESSAGE_DATA_BYTES",channel.messageFrame.MessageData.Bytes()  )
-			time.Sleep(200*time.Millisecond)
+
 			// Check if meta data is even filled or not (Return and wait for more bytes, until it is complete)
 			if channel.messageFrame.MessageData.Len() < META_BYTES {
-				// fmt.Println("Breaking")
+
 				break
 			}
 
@@ -367,17 +337,17 @@ func NewParseFrame(channel *Channel) {
 				} else if channel.messageFrame.MessageData.Len() == int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)) {
 					// The message data frame matches exactly with the required length of it
 					// Pluch the message buffer by reading complete & Reset the MetaFlag
-					MESSAGE_DATA_FRAME := make([]byte, channel.messageFrame.MessageData.Len())
+					MESSAGE_DATA_FRAME := make([]byte, int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
-					// fmt.Println("MESSAGE_DATA_FRAME = " ,MESSAGE_DATA_FRAME)
+					// fmt.Println("MESSAGE_DATA_FRAME = ", MESSAGE_DATA_FRAME)
 					channel.messageFrame.MetaDataFilled = false
 
 					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				} else {
 					// The message data contains atleast one, or more than message frames
-					MESSAGE_DATA_FRAME := make([]byte, channel.messageFrame.MessageData.Len())
+					MESSAGE_DATA_FRAME := make([]byte, int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
-					// fmt.Println("MESSAGE_DATA_FRAME > " ,MESSAGE_DATA_FRAME)
+					// fmt.Println("MESSAGE_DATA_FRAME > ", int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.messageFrame.MetaDataFilled = false
 
 					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))

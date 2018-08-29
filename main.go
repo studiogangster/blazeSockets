@@ -2,7 +2,6 @@ package main
 
 import (
 	bws "blazesockets/websockets"
-	"fmt"
 	"net"
 	"time"
 )
@@ -20,20 +19,20 @@ func SendFrame() {
 
 		// conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
 
-		mss := make([]byte, msg.Len()*2)
-		copy(mss[0:(msg.Len())], msg.Bytes())
+		// mss := make([]byte, msg.Len()*2)
+		// copy(mss[0:(msg.Len())], msg.Bytes())
 		// copy(mss[(msg.Len()):], msg.Bytes())
-		fmt.Println("MESSAGE READY TO WRITE", msg)
-		conn.Write(msg.Bytes())
-		// time.Sleep(time.Second * 2)
-		// msg = bws.CreateFrame('M', "HELLO BITC")
-		// conn.Write(msg.Bytes())
+		// fmt.Println("MESSAGE READY TO WRITE", msg)
+		conn.Write(msg.Bytes()[0:3])
+		time.Sleep(time.Second * 3)
+		conn.Write(msg.Bytes()[3:])
+		conn.Write(msg.Bytes()[0:5])
+		conn.Write(msg.Bytes()[5:])
+		conn.Write(msg.Bytes()[0:5])
+		conn.Write(msg.Bytes()[5:])
 
 		break
-		// fmt.Fprintf(conn, string(msg.Bytes()))
-		// fmt.Println("DATA SENT")
-		// listen for reply
-		// time.Sleep(300 * time.Millisecond)
+
 	}
 }
 

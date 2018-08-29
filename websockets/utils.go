@@ -81,6 +81,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 	}
 
 	channel.mutex.Lock()
+	// poller.Stop(channel.fileDescriptor)
 	channel.engaged = true
 	channel.mutex.Unlock()
 
@@ -91,7 +92,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 	}
 
 	ReadMessageFrame(channel)
-	fmt.Println(channel.messageFrame)
+	// fmt.Println(channel.messageFrame)
 	// time.Sleep(4 * time.Second)
 	// channel.conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
 	// n, _ := io.ReadFull(channel.conn, data)
@@ -154,7 +155,7 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 		engaged:        false,
 		socketName:     sessionKey,
 		conn:           *conn,
-		fileDescriptor: netpoll.Must(netpoll.HandleRead(*conn)),
+		fileDescriptor: netpoll.Must(netpoll.HandleReadOnce(*conn)), //Configuring oneshot/edhe trigger kqueue
 		messageFrame: MessageFrame{
 			MessageLength: make([]byte, 2),
 		},
