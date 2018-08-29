@@ -16,22 +16,19 @@ func SendFrame() {
 	for {
 		time.Sleep(2 * time.Second)
 		// testData := make([]byte, 4096)
-		msg := bws.CreateFrame('M', "HELLO BITCH")
-		fmt.Println("MESSAGE READY TO WRITE", msg)
-		// conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
-		time.Sleep(time.Second * 2)
+		msg := bws.CreateFrame('M', "HELLO BITC")
 
-		n, err := conn.Write(msg.Bytes())
-		// conn.Write(msg.Bytes())
-		time.Sleep(time.Second * 5)
+		// conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
+
+		mss := make([]byte, msg.Len()*2)
+		copy(mss[0:(msg.Len())], msg.Bytes())
+		// copy(mss[(msg.Len()):], msg.Bytes())
+		fmt.Println("MESSAGE READY TO WRITE", msg)
 		conn.Write(msg.Bytes())
-		// conn.Write(msg.Bytes()[3:])
-		bws.COUNT += n
-		if err != nil {
-			fmt.Println(err)
-			// fmt.Println("Bytes Writtedn", bws.COUNT)
-			// break
-		}
+		// time.Sleep(time.Second * 2)
+		// msg = bws.CreateFrame('M', "HELLO BITC")
+		// conn.Write(msg.Bytes())
+
 		break
 		// fmt.Fprintf(conn, string(msg.Bytes()))
 		// fmt.Println("DATA SENT")
