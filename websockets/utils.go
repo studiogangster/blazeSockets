@@ -42,7 +42,6 @@ func (pingStruct PingBraodcastIteration) broadcastPing() {
 	}
 	pingStruct.Unlock()
 	pingFrame = ws.Frame{}
-	time.Sleep(2 * time.Second)
 	pingStruct.broadcastPing()
 }
 
@@ -63,6 +62,7 @@ func PollStatus() {
 
 }
 
+// TODO: Since we are using on shot, locks can be removed
 // Handle read(), close() event on a socket, when netpoller informs the socket is read ready. This happens in it's own goroutine
 func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, channel *Channel) {
 
@@ -87,6 +87,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 
 	// CLOSE EVENT FROM TCP SOCKET
 	if ev&netpoll.EventReadHup != 0 {
+		fmt.Println("Close Event From Socket")
 		channel.close()
 		return
 	}
@@ -120,7 +121,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 // Registering epoll event/ kevent on the queue, and invoke a goroutine once it gets signal, that there is something available for reading
 func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 	// Below is async call, that return the functions and callback gets executed when event occurs!
-	// COUNTER := 0
+
 	err := poller.Start(channel.fileDescriptor, func(ev netpoll.Event) {
 		// COUNTER++
 		// fmt.Println(COUNTER)
@@ -155,7 +156,9 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 		engaged:        false,
 		socketName:     sessionKey,
 		conn:           *conn,
-		fileDescriptor: netpoll.Must(netpoll.HandleReadOnce(*conn)), //Configuring oneshot/edhe trigger kqueue
+		fileDescriptor: netpoll.Must(netpoll.Handle(*conn, netpoll.EventRead|netpoll.EventOneShot)), //Configuring oneshot/edhe trigger kqueue
+
+		// fileDescriptor: netpoll.Must(netpoll.HandleReadOnce(*conn)), //Configuring oneshot/edhe trigger kqueue
 		messageFrame: MessageFrame{
 			MessageLength: make([]byte, 2),
 		},
@@ -166,17 +169,16 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 
 }
 
-func broadCastSync(data []byte) {
-	binaryFrame := ws.NewBinaryFrame(data)
+func BroadCastSync(data []byte) {
+
 	for item := range SOCKETS.Iter() {
 
 		channel, ok := item.Val.(*Channel)
 		if ok {
-			channel.writer(binaryFrame)
+			channel.conn.Write(data)
 		} else {
 		}
 	}
-	binaryFrame = ws.Frame{}
 
 }
 
@@ -223,7 +225,7 @@ func handleConnection(conn net.Conn, err error) {
 	conn.SetDeadline(time.Time{})
 	log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrade()", "Success:")
 
-	CreateChannel(&conn, "sessionKey")
+	CreateChannel(&conn, "sessionKey"+time.Now().String())
 
 }
 

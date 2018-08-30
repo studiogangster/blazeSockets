@@ -289,7 +289,7 @@ func extractBuffer(channel *Channel, bytes_read int, buffer []byte) {
 func NewParseFrame(channel *Channel) {
 	// Buffer to read from tcp socket directly
 
-	buffer := make([]byte, 2)
+	buffer := make([]byte, 100)
 	for {
 
 		// channel.conn.SetReadDeadline(time.Now().Add(1 * time.Second))
@@ -298,6 +298,7 @@ func NewParseFrame(channel *Channel) {
 		bytes_read, err := channel.conn.Read(buffer)
 
 		if err != nil {
+
 			poller.Resume(channel.fileDescriptor)
 			fmt.Println("Message EOF / TimeOut")
 			return

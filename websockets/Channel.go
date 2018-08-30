@@ -2,6 +2,7 @@ package websockets
 
 import (
 	wsLogs "blazesockets/logs"
+	"fmt"
 	"net"
 	"sync"
 
@@ -22,7 +23,7 @@ type Channel struct {
 // TODO Handle Edge case for parallel execution and deadlock
 // Channel.close() is used to gracefully close the connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
 func (channel *Channel) close() {
-
+	fmt.Println("CLosing Socket")
 	SOCKETS.Remove(channel.socketName)
 	// Not interested in any event from this socket, Remove from netpoll/epoll/kqueue
 	poller.Stop(channel.fileDescriptor)
