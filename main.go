@@ -3,7 +3,6 @@ package main
 import (
 	bws "blazesockets/websockets"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"time"
 )
@@ -47,11 +46,11 @@ func SendFrame() {
 
 func dummyBroadcast() {
 	for {
+		// time.Sleep(3 * time.Second)
 		data := "INIT"
 		for len(data) < 65000 {
 			data += "PRAKHAR"
 		}
-		ioutil.WriteFile("dat1", []byte(data), 0644)
 
 		msg := bws.CreateFrame('M', data)
 		bws.BroadCastSync(msg.Bytes())
@@ -62,7 +61,6 @@ func dummyBroadcast() {
 		for len(data) < 1000 {
 			data += "PRAKHAR"
 		}
-		ioutil.WriteFile("dat1", []byte(data), 0644)
 
 		msg = bws.CreateFrame('P', data)
 		bws.BroadCastSync(msg.Bytes())
@@ -73,7 +71,7 @@ func dummyBroadcast() {
 }
 
 func main() {
-	go dummyBroadcast()
+	// go dummyBroadcast()
 	// go SendFrame()
 	// go bws.PollStatus()
 	// msg := bws.CreateFrame(255, "Hello World: Prakhar Agnihotri")

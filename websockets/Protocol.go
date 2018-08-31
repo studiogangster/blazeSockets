@@ -342,7 +342,7 @@ func NewParseFrame(channel *Channel) {
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME = ", MESSAGE_DATA_FRAME)
 					channel.messageFrame.MetaDataFilled = false
-
+					fmt.Println("*MESSAGE TYPE*", string(channel.messageFrame.MessageType))
 					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				} else {
 					// The message data contains atleast one, or more than message frames
@@ -350,7 +350,7 @@ func NewParseFrame(channel *Channel) {
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME > ", int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.messageFrame.MetaDataFilled = false
-
+					fmt.Println("*MESSAGE TYPE*", string(channel.messageFrame.MessageType))
 					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				}
 
