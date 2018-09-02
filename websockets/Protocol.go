@@ -53,23 +53,23 @@ func _ReadMessageFrame(channel *Channel) {
 	// channel.messageFrame = ParseFrame(channel.conn)
 }
 
-func setMessageLength(buffer *bytes.Buffer, msg string) {
+func setMessageLength(buffer *bytes.Buffer, msg []byte) {
 	bs := make([]byte, 2)
 	binary.LittleEndian.PutUint16(bs, uint16(len(msg)))
 	buffer.Write(bs)
 }
 
-func setMessageData(buffer *bytes.Buffer, msg string) {
+func setMessageData(buffer *bytes.Buffer, msg []byte) {
 	buffer.Write([]byte(msg))
 }
 
-func generateFrameMetaData(buffer *bytes.Buffer, message_type byte, msg string) {
+func generateFrameMetaData(buffer *bytes.Buffer, message_type byte, msg []byte) {
 
 	setMessageType(buffer, message_type)
 	setMessageLength(buffer, msg)
 }
 
-func generateFramePayload(buffer *bytes.Buffer, msg string) {
+func generateFramePayload(buffer *bytes.Buffer, msg []byte) {
 	setMessageData(buffer, msg)
 }
 
@@ -78,7 +78,7 @@ func generateFramePayload(buffer *bytes.Buffer, msg string) {
 //	   1 bytes (MessageType)
 //	 + 2 bytes (MessageLength)
 //	 + data->byteArray[].length
-func CreateFrame(message_type byte, data string) bytes.Buffer {
+func CreateFrame(message_type byte, data []byte) bytes.Buffer {
 	buffer := bytes.Buffer{}
 	generateFrameMetaData(&buffer, message_type, data)
 	generateFramePayload(&buffer, data)
@@ -342,7 +342,7 @@ func NewParseFrame(channel *Channel) {
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME = ", MESSAGE_DATA_FRAME)
 					channel.messageFrame.MetaDataFilled = false
-					fmt.Println("*MESSAGE TYPE*", string(channel.messageFrame.MessageType))
+
 					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				} else {
 					// The message data contains atleast one, or more than message frames
@@ -350,7 +350,7 @@ func NewParseFrame(channel *Channel) {
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME > ", int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.messageFrame.MetaDataFilled = false
-					fmt.Println("*MESSAGE TYPE*", string(channel.messageFrame.MessageType))
+
 					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				}
 

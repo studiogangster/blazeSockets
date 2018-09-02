@@ -1,47 +1,33 @@
 package main
 
 import (
+	example "blazesockets/example"
 	bws "blazesockets/websockets"
 	"fmt"
-	"net"
 	"time"
+
+	"github.com/golang/protobuf/proto"
 )
 
-func SendFrame() {
-	bws.COUNT = 0
+func createNotificationFrame() []byte {
 
-	// connect to this socket
-	conn, _ := net.Dial("tcp", "127.0.0.1:8080")
-
-	return
-	for {
-		time.Sleep(2 * time.Second)
-		// testData := make([]byte, 4096)
-		msg := bws.CreateFrame('M', "HELLO BITC")
-
-		// conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
-
-		// mss := make([]byte, msg.Len()*2)
-		// copy(mss[0:(msg.Len())], msg.Bytes())
-		// copy(mss[(msg.Len()):], msg.Bytes())
-		fmt.Println("MESSAGE READY TO WRITE", msg)
-		conn.Write(msg.Bytes()[0:3])
-		time.Sleep(time.Second * 3)
-		conn.Write(msg.Bytes()[3:])
-		conn.Write(msg.Bytes()[0:5])
-		conn.Write(msg.Bytes()[5:])
-		conn.Write(msg.Bytes()[0:5])
-		conn.Write(msg.Bytes()[5:])
-		conn.Write(msg.Bytes())
-		conn.Write(msg.Bytes())
-		conn.Write(msg.Bytes())
-		conn.Write(msg.Bytes())
-		conn.Write(msg.Bytes())
-		conn.Close()
-
-		break
-
+	notification := &example.Notification{
+		AppId:  "app_id",
+		Desc:   "Desc",
+		Intent: example.NotificationIntent_OPEN_APP,
+		SDesc:  "Short Description",
+		Title:  "Title",
 	}
+
+	// msg := bws.CreateFrame('M', notification)
+
+	fmt.Println("Notification")
+	P, _ := proto.Marshal(notification)
+
+	msg := bws.CreateFrame('M', P)
+
+	return msg.Bytes()
+
 }
 
 func dummyBroadcast() {
@@ -52,26 +38,18 @@ func dummyBroadcast() {
 			data += "PRAKHAR"
 		}
 
-		msg := bws.CreateFrame('M', data)
-		bws.BroadCastSync(msg.Bytes())
-		fmt.Println("Sending", msg.Bytes()[:3], bws.SOCKETS.Count())
-		time.Sleep(3 * time.Second)
-
-		data = "INIT"
-		for len(data) < 1000 {
-			data += "PRAKHAR"
-		}
-
-		msg = bws.CreateFrame('P', data)
-		bws.BroadCastSync(msg.Bytes())
-		fmt.Println("Sending", msg.Bytes()[:3], bws.SOCKETS.Count())
+		msg := createNotificationFrame()
+		bws.BroadCastSync(msg)
+		fmt.Println("Sending", "Proto Notification")
+		time.Sleep(2 * time.Second)
 
 	}
 
 }
 
 func main() {
-	// go dummyBroadcast()
+	dummyBroadcast()
+
 	// go SendFrame()
 	// go bws.PollStatus()
 	// msg := bws.CreateFrame(255, "Hello World: Prakhar Agnihotri")
