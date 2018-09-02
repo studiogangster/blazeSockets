@@ -24,6 +24,12 @@
   version = "v0.1.0"
 
 [[projects]]
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/mailru/easygo"
   packages = ["netpoll"]
@@ -44,6 +50,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a51c86b24a88ba2b51cf7fd12103a7fe28a9aaf3b2ee49bfaa49ca792d22e6de"
+  inputs-digest = "11c5e91d36163598cc440f4db1c723a2bb38fbeb4429d6fce418b9cfdef6ee0a"
   solver-name = "gps-cdcl"
   solver-version = 1

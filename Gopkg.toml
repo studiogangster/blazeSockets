@@ -40,3 +40,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/orcaman/concurrent-map"
+
+[[constraint]]
+  name = "github.com/golang/protobuf"
+  version = "1.2.0"
