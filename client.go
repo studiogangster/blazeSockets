@@ -7,17 +7,18 @@ import (
 	"time"
 )
 
-func SendFrasme() {
-	time.Sleep(4 * time.Second)
+func main() {
+
 	// connect to this socket
-	conn, _ := net.Dial("tcp", "127.0.0.1:798080")
+	conn, _ := net.Dial("tcp", "127.0.0.1:8080")
 
 	for {
-		time.Sleep(4 * time.Second)
-		msg := bws.CreateFrame('M', "Hello Bitch")
+
+		msg := bws.CreateFrame('A', []byte("Hello Bitch"))
 
 		fmt.Fprintf(conn, string(msg.Bytes()))
 		fmt.Println("DATA SENT")
 		// listen for reply
+		time.Sleep(10 * time.Second)
 	}
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	example "blazesockets/example"
+	socketModels "blazesockets/protoModels/models"
 	bws "blazesockets/websockets"
 	"fmt"
 	"time"
@@ -9,25 +9,34 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
-func createNotificationFrame() []byte {
+func CreateNotificationFrame() []byte {
 
-	notification := &example.Notification{
-		AppId:  "app_id",
-		Desc:   "Desc",
-		Intent: example.NotificationIntent_OPEN_APP,
-		SDesc:  "Short Description",
-		Title:  "Title",
+	notification := &socketModels.Notification{
+		AppId:           "app_id",
+		Desc:            "Desc",
+		Intent:          socketModels.NotificationIntent_OPEN_APP,
+		SDesc:           "Short Description",
+		Title:           "Title",
+		ShowIfInstalled: true,
 	}
-
 	// msg := bws.CreateFrame('M', notification)
-
 	fmt.Println("Notification")
 	P, _ := proto.Marshal(notification)
-
-	msg := bws.CreateFrame('M', P)
-
+	msg := bws.CreateFrame('N', P)
 	return msg.Bytes()
+}
 
+func CreateConfigFrame() []byte {
+
+	notification := &socketModels.Configurator{
+		Intent:   socketModels.ActionIntent_SNOOZE,
+		MetaData: "Dummy meta data for configurator",
+	}
+	// msg := bws.CreateFrame('M', notification)
+	fmt.Println("Notification")
+	P, _ := proto.Marshal(notification)
+	msg := bws.CreateFrame('C', P)
+	return msg.Bytes()
 }
 
 func dummyBroadcast() {
@@ -38,17 +47,28 @@ func dummyBroadcast() {
 			data += "PRAKHAR"
 		}
 
-		msg := createNotificationFrame()
+		msg := CreateNotificationFrame()
 		bws.BroadCastSync(msg)
 		fmt.Println("Sending", "Proto Notification")
+		time.Sleep(2 * time.Second)
+
+		msg = CreateConfigFrame()
+		bws.BroadCastSync(msg)
+		fmt.Println("Sending", "Config Message")
 		time.Sleep(2 * time.Second)
 
 	}
 
 }
 
+func TestRoom() {
+
+	bws.CreateRoom("test")
+
+}
+
 func main() {
-	dummyBroadcast()
+	go TestRoom()
 
 	// go SendFrame()
 	// go bws.PollStatus()
@@ -62,6 +82,7 @@ func main() {
 		PORT:       "8080",
 		EnableLogs: true,
 	}.Configure()
+
 	bws.StartServer()
 
 }

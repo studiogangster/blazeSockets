@@ -1,0 +1,11 @@
+syntax = "proto3";
+package com.example.proto;
+
+
+message Authentication {
+  string appId = 1;
+  string version = 2;
+  string state=3;
+  string token = 4;
+
+}

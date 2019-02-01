@@ -1,0 +1,19 @@
+syntax = "proto3";
+package com.example.proto;
+
+enum NotificationIntent {
+  OPEN_APP = 0;
+  DO_NOTHING = 1;
+  OPEN_CONTAINER = 2;
+  OPEN_STORE_LINK = 3;
+}
+
+message Notification {
+  string appId = 1;
+  string title = 2;
+  string sDesc = 3;
+  string Desc = 4;
+  NotificationIntent intent = 5;
+  bool showIfInstalled = 6; // If true, show the notification if app_id is present in DB, else show it anyways
+
+}

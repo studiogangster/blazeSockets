@@ -2,6 +2,7 @@ package websockets
 
 import (
 	wsLogs "blazesockets/logs"
+	redis "blazesockets/redis/sentinel"
 	"bytes"
 	"fmt"
 	"net"
@@ -17,6 +18,10 @@ import (
 
 var COUNT int
 var R_COUNT int
+
+const Handshaketimeout = 2
+
+const SOCKET_ONCONNECT_TIMEOUT = 3 // in Seconds
 
 type PingBraodcastIteration struct {
 	sync.Mutex
@@ -129,12 +134,13 @@ func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 	})
 
 	if err != nil {
+		redis.UserDisconnected(channel.socketName)
 		channel.mutex.Lock()
-
 		channel.close()
 		channel.mutex.Unlock()
 		log.Println(wsLogs.WS_SERVER_LOGS, ":", "reigisterReadEvent()", "REGISTERING", channel.socketName, "Error:", err)
 	} else {
+		redis.UserConnected(channel.socketName)
 		log.Println(wsLogs.WS_SERVER_LOGS, ":", "reigisterReadEvent()", "REGISTERING", channel.socketName, "Success:")
 	}
 
@@ -183,15 +189,13 @@ func BroadCastSync(data []byte) {
 }
 
 func handleConnection(conn net.Conn, err error) {
-	log.Println("New TCP Connection accepted")
-	conn.SetDeadline(time.Now().Add(SERVER_CONFIG.Handshaketimeout))
+
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println(wsLogs.TCP_SERVER_LOGS, ":Defer", "handleConnection()", r)
 		}
 	}()
 
-	// conn.SetDeadline(time.Now().Add(0 * time.Microsecond))
 	if err != nil {
 		log.Println(wsLogs.TCP_SERVER_LOGS, ":", "handleConnection()", "Error:", err)
 		conn.Close()
@@ -199,36 +203,35 @@ func handleConnection(conn net.Conn, err error) {
 		// handle error
 	}
 
-	// sessionKey := ""
-	// u := ws.Upgrader{
-	// 	OnHeader: func(key, value []byte) (err error, code int) {
-	// 		sessionKey = string(value)
-	// 		return
-	// 	},
-	// }
+	// 	Check if socket passes auth token, if not discard and close the connection
+	conn.SetDeadline(time.Now().Add(Handshaketimeout * time.Second))
 
-	// log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrading()")
-	// _, err = u.Upgrade(conn)
+	authToken := make([]byte, 100)
+
+	_, err = conn.Read(authToken)
+
 	if err != nil {
-		// handle error
-		fmt.Println("Error upgrading socket", err)
-		log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrade()", "Error:", err)
-		err = conn.Close()
-
-		if err != nil {
-			fmt.Println("Error", err)
-		}
+		fmt.Println("Authtoken not recieved within timeout")
+		conn.Close()
 		return
-
 	}
+
+	authenticate(authToken)
+
 	// Resets deadline to ensure, persistent socket connection
 	conn.SetDeadline(time.Time{})
 	log.Println(wsLogs.WS_SERVER_LOGS, ":", "Upgrade()", "Success:")
 
-	CreateChannel(&conn, "sessionKey"+time.Now().String())
+	CreateChannel(&conn, string(authToken))
 
 }
 
+// TODO: Store user in redis, and return session Key
+func authenticate(token []byte) {
+
+}
+
+// TODO: Shall be removed in production
 func getGID() uint64 {
 	b := make([]byte, 64)
 	b = b[:runtime.Stack(b, false)]
@@ -245,7 +248,8 @@ func startServer() {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("TCP Server", "Listening on PORT:", SERVER_CONFIG.PORT)
+
+	log.Println("BlazeSocket: ", "Listening on PORT:", SERVER_CONFIG.PORT)
 
 	for {
 		conn, err := ln.Accept()

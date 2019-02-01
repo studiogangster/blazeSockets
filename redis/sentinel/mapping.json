@@ -1,0 +1,33 @@
+[
+
+{
+    "BUCKETS":{
+
+                "userid_{user_id}_deviceid_{device_id}":    {
+                    "desc": "{user_id}: Recognised primary key to identify the user (ssoId). {device_id}: User's device id ",
+                    "type": "HashMap",
+                    "value": [
+                                {
+                                "key": "nodeId",
+                                "value": "{nodeId} is the server's address"
+                                } ,
+                                {
+                                "key": "timestamp",
+                                "value": "Timestamp at which the user connected"
+                                }
+                        ]
+                    
+                } ,
+
+                "userid_{user_id}":     {
+                    "desc": "{userid}: Recognised primary key to identify the user (ssoId). This is set containing all the device id associated with the user",
+                    "type": "Set",
+                    "value": [  "{deviceId}"  ]
+
+                }
+
+                }
+}
+
+
+]

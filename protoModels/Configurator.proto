@@ -1,0 +1,14 @@
+syntax = "proto3";
+package com.example.proto;
+
+enum ActionIntent {
+  CLOSE_SOCKET = 0;
+  SNOOZE = 1; // Close sokcet and Reconecet after `T` seconds
+  PURGE = 2; //Clear session and logout the user
+}
+
+message Configurator {
+  ActionIntent intent = 1;
+  string metaData  = 2;
+
+}
