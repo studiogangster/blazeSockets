@@ -8,6 +8,7 @@ import (
 
 	"github.com/mailru/easygo/netpoll"
 	cMap "github.com/orcaman/concurrent-map"
+
 )
 
 // Channel is a wrapper around websocket, that encapsulates a mutex(for locking), socketName, underlying connection, and fildescriptor associated with the socket.
@@ -22,7 +23,7 @@ type Room struct {
 
 var ROOMS = cMap.New()
 
-func CreateRoomByPlayer(roomName string, creator *Channel, roomSize int) {
+func CreateRoomViaPlayer(roomName string, creator *Channel, roomSize int) {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
 	room := make(map[string]*Channel)
@@ -41,11 +42,14 @@ func CreateRoom(roomName string) {
 	// TOOD: Update REDIS about the create room
 
 	fmt.Println("Room Created ", room)
+	go LogChatRoom()
 
 }
 
 func LogChatRoom() {
 	for {
+
+
 		BroadcastInRoom("test", []byte{1, 2, 3})
 		time.Sleep(2 * time.Second)
 	}
@@ -76,10 +80,12 @@ func RemovePlayerFromRoom(roomName string, player *Channel) {
 
 func BroadcastInRoom(roomName string, data []byte) {
 	room, ok := ROOMS.Get(roomName)
+
 	if ok {
 		playerInRooms := room.(map[string]bool)
 
 		for playerName, active := range playerInRooms {
+			//fmt.Println("BroadcastRoom Playername", playerName)
 			fmt.Println(playerName)
 			if active {
 				playerChannel, ok := SOCKETS.Get(playerName)

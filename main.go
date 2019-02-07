@@ -80,7 +80,7 @@ func main() {
 	// fmt.Println("message", MESSAGE_FRAME)
 	bws.ServerConfig{
 		PORT:       "8080",
-		EnableLogs: true,
+		EnableLogs: false,
 	}.Configure()
 
 	bws.StartServer()

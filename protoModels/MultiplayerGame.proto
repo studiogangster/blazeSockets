@@ -1,0 +1,87 @@
+syntax = "proto3";
+package com.example.proto;
+
+enum MultiplayerMessageType {
+  
+  ROOM_CREATE = 0; 
+  ROOM_JOIN = 1; 
+  ROOM_LEAVE = 2; 
+  ROOM_DESTROY = 3;
+  ROOM_HALT = 4; 
+  ROOM_GET_DETAILS = 5;
+  ROOM_ADD_PLAYER = 6;
+  ROOM_KICK_PLAYER = 7;
+  ROOM_SEND_MESSAGE = 8;
+
+}
+
+message MultiplayerMessage {
+  MultiplayerMessageType multiplayerMessageType = 1;
+  bytes messsage = 2;
+}
+
+
+message RoomCreate {
+  
+  string roomToken  = 1;
+  string roomName  = 2;
+  string roomSize = 3;
+  string roomTTL = 4;
+  string roomId = 5;
+  string gameId = 6;
+
+}
+
+
+message RoomJoin {
+  
+  string roomToken  = 1;
+
+}
+
+
+message RoomLeave {
+  
+  string roomToken  = 1;
+
+}
+
+message RoomDestroy {
+  
+  string roomToken  = 1;
+
+}
+
+message RoomHalt {
+  
+  string roomToken  = 1;
+
+}
+
+
+message RoomGetDetails {
+  
+  string roomToken  = 1;
+
+}
+
+
+message RoomAddPlayer {
+  
+  string roomToken  = 1;
+  string playerId = 2;
+
+}
+
+message RoomKickPlayer {
+  
+  string roomToken  = 1;
+  string playerId = 2;
+
+}
+
+message RoomSendMessage {
+  string roomToken = 1;
+  string message  = 2;
+
+}

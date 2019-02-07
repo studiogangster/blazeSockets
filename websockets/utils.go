@@ -2,7 +2,6 @@ package websockets
 
 import (
 	wsLogs "blazesockets/logs"
-	redis "blazesockets/redis/sentinel"
 	"bytes"
 	"fmt"
 	"net"
@@ -80,7 +79,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 		atomic.AddInt64(&rLocks, -1)
 		return
 	} else {
-		fmt.Println("GoRoutine Assigned Task")
+		//fmt.Println("GoRoutine Assigned Task")
 		channel.mutex.RUnlock()
 		atomic.AddInt64(&rLocks, -1)
 	}
@@ -92,7 +91,7 @@ func handleOnNetPollReadEventrigger(ev netpoll.Event, poller netpoll.Poller, cha
 
 	// CLOSE EVENT FROM TCP SOCKET
 	if ev&netpoll.EventReadHup != 0 {
-		fmt.Println("Close Event From Socket")
+		//fmt.Println("Close Event From Socket")
 		channel.close()
 		return
 	}
@@ -134,13 +133,13 @@ func reigisterReadEvent(poller netpoll.Poller, channel *Channel) {
 	})
 
 	if err != nil {
-		redis.UserDisconnected(channel.socketName)
+		// redis.UserDisconnected(channel.socketName)
 		channel.mutex.Lock()
 		channel.close()
 		channel.mutex.Unlock()
 		log.Println(wsLogs.WS_SERVER_LOGS, ":", "reigisterReadEvent()", "REGISTERING", channel.socketName, "Error:", err)
 	} else {
-		redis.UserConnected(channel.socketName)
+		// redis.UserConnected(channel.socketName)
 		log.Println(wsLogs.WS_SERVER_LOGS, ":", "reigisterReadEvent()", "REGISTERING", channel.socketName, "Success:")
 	}
 
@@ -158,6 +157,7 @@ func createPoller() netpoll.Poller {
 // CreateChannel creates a channel from connection for read and write functionality!
 func CreateChannel(conn *net.Conn, sessionKey string) {
 
+	log.Println("Sessionkey", sessionKey)
 	channel := &Channel{
 		engaged:        false,
 		socketName:     sessionKey,
@@ -170,8 +170,11 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 		},
 	}
 
-	SOCKETS.Set(channel.socketName, channel)
+	SOCKETS.Set(sessionKey, channel)
+
 	reigisterReadEvent(poller, channel)
+
+	//AddPlayerToRoom("test", channel)
 
 }
 
@@ -228,7 +231,7 @@ func handleConnection(conn net.Conn, err error) {
 
 // TODO: Store user in redis, and return session Key
 func authenticate(token []byte) {
-
+	log.Println("Authenticating" , token)
 }
 
 // TODO: Shall be removed in production

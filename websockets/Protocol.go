@@ -1,6 +1,7 @@
 package websockets
 
 import (
+	messageHandler "blazesockets/MessageHandler"
 	"bytes"
 	"encoding/binary"
 	"fmt"
@@ -84,6 +85,7 @@ func CreateFrame(message_type byte, data []byte) bytes.Buffer {
 	generateFramePayload(&buffer, data)
 	return buffer
 }
+
 func min(x, y int) int {
 	if x < y {
 		return x
@@ -286,6 +288,40 @@ func extractBuffer(channel *Channel, bytes_read int, buffer []byte) {
 	}
 }
 
+// The place to parse the message recieved from the client
+func MessageParser(MessageType byte, message []byte) {
+	//fmt.Println("*MESSAGE*" , string(MessageType), string(message))
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("MessageParser Failed", r)
+		}
+	}()
+
+	switch MessageType {
+
+	case 'A':
+		// Handle Authentication Event
+		log.Println("Authentication", string(message))
+		break
+
+	case 'M':
+		// Handle multiplayer Events
+		//log.Println("Multiplayer", string(message))
+		msg := messageHandler.ParseMultiplayerModel(message)
+		messageHandler.HandleMultiplayerMessage(msg)
+		fmt.Println("Multiplayer", string(message))
+		// data := new(socketModels.MultiplayerHandshake)
+		// proto.Unmarshal(message, data)
+		// fmt.Println(data)
+		break
+
+	default:
+
+	}
+
+}
+
 func NewParseFrame(channel *Channel) {
 	// Buffer to read from tcp socket directly
 
@@ -300,13 +336,13 @@ func NewParseFrame(channel *Channel) {
 		if err != nil {
 
 			poller.Resume(channel.fileDescriptor)
-			fmt.Println("Message EOF / TimeOut")
+			// fmt.Println("Message EOF / TimeOut", err)
 			return
 		}
 
 		if bytes_read == 0 {
 			poller.Resume(channel.fileDescriptor)
-			fmt.Println("No Bytes Left To Read")
+			//fmt.Println("No Bytes Left To Read")
 			return
 		}
 		// fmt.Println("NewBytes Read ", bytes_read , buffer)
@@ -339,19 +375,24 @@ func NewParseFrame(channel *Channel) {
 					// The message data frame matches exactly with the required length of it
 					// Pluch the message buffer by reading complete & Reset the MetaFlag
 					MESSAGE_DATA_FRAME := make([]byte, int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
+					MessageType := channel.messageFrame.MessageType
+
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME = ", MESSAGE_DATA_FRAME)
 					channel.messageFrame.MetaDataFilled = false
 
-					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
+					MessageParser(MessageType, MESSAGE_DATA_FRAME)
+
+					// fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				} else {
 					// The message data contains atleast one, or more than message frames
 					MESSAGE_DATA_FRAME := make([]byte, int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
+					MessageType := channel.messageFrame.MessageType
 					channel.messageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME > ", int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.messageFrame.MetaDataFilled = false
 
-					fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
+					MessageParser(MessageType, MESSAGE_DATA_FRAME)
 				}
 
 			}
