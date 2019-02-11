@@ -37,6 +37,17 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/mediocregopher/radix.v2"
+  packages = [
+    "pool",
+    "pubsub",
+    "redis",
+    "sentinel"
+  ]
+  revision = "b67df6e626f993b64b3ca9f4b8630900e61002e3"
+
+[[projects]]
+  branch = "master"
   name = "github.com/orcaman/concurrent-map"
   packages = ["."]
   revision = "b28018939af9022337862b94a463abb18abb3e0e"
@@ -50,6 +61,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "11c5e91d36163598cc440f4db1c723a2bb38fbeb4429d6fce418b9cfdef6ee0a"
+  inputs-digest = "64ed9829f7dcc4df93067d0e7718232dea23579cd972008c6db405c92d69949f"
   solver-name = "gps-cdcl"
   solver-version = 1

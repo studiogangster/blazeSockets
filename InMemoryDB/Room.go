@@ -1,9 +1,8 @@
 package InMemoryDB
 
 import (
-cMap "github.com/orcaman/concurrent-map"
+	cMap "github.com/orcaman/concurrent-map"
 )
 
 var ROOMS = cMap.New()
-
 

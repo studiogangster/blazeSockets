@@ -1,6 +1,7 @@
 package messageframer
 
 import (
+	room "blazesockets/multiplayer/Room"
 	socketModels "blazesockets/protoModels/models"
 	"fmt"
 
@@ -23,7 +24,9 @@ func HandleMultiplayerMessage(message *socketModels.MultiplayerMessage) {
 
 	case socketModels.MultiplayerMessageType_ROOM_CREATE:
 		fmt.Println("MultiplayerMessageType_ROOM_CREATE")
-		roomCreate(message.Messsage)
+		message := roomCreate(message.Messsage)
+
+		room.CreateRoom(message.RoomName)
 		break
 
 	case socketModels.MultiplayerMessageType_ROOM_JOIN:
@@ -83,6 +86,7 @@ func roomJoin(payload []byte) *socketModels.RoomJoin {
 	if err != nil {
 		panic(err)
 	}
+
 	return message
 }
 

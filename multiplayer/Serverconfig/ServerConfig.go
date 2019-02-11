@@ -1,10 +1,10 @@
-package websockets
+package serverconfig
 
 import (
 	"time"
 )
 
-var SERVER_CONFIG = ServerConfig{}
+
 
 // ServerConfig is the configuration for server
 type ServerConfig struct {
@@ -13,7 +13,4 @@ type ServerConfig struct {
 	Handshaketimeout time.Duration
 }
 
-func (serverConfig ServerConfig) Configure() {
-	SERVER_CONFIG = serverConfig
-	configure()
-}
+

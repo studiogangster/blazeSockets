@@ -1,26 +1,60 @@
 package server
 
 import (
+	"blazesockets/InMemoryDB"
 	wsLogs "blazesockets/logs"
-	memory "blazesockets/InMemoryDB"
+
+	serverConfig "blazesockets/multiplayer/Serverconfig"
+
+	utils "blazesockets/multiplayer/Utils"
+
+	"net"
 )
 
 // Server config
-var Config ServerConfig = ServerConfig{}
+var Config serverConfig.ServerConfig = serverConfig.ServerConfig{}
 
 // Log Configurator
 var log = wsLogs.LogConfig{}
 
-// Creates a netpoller (epoll/kqueue) on start up, where all the sockets that are interested resides!
-var Poller = createPoller()
 
-// SOCKETS are concurrent hashmap that maps <socketName, *socket>
-var SOCKETS = memory.SOCKETS
 
-func configure() {
-	log.EnableLogging(SERVER_CONFIG.EnableLogs)
+func Configure(serverConfig *serverConfig.ServerConfig) {
+	InMemoryDB.ServerConfig = serverConfig
+	log.EnableLogging(serverConfig.EnableLogs)
 }
 
 func StartServer() {
 	startServer()
 }
+
+
+//Core functionality
+
+
+
+func startServer() {
+
+	ln, err := net.Listen("tcp", "0.0.0.0:"+InMemoryDB.ServerConfig.PORT)
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("BlazeSocket: ", "Listening on PORT:",InMemoryDB.ServerConfig.PORT)
+
+	for {
+		conn, err := ln.Accept()
+		if conn == nil {
+			continue
+		}
+		// Launch a goroutine for handling new accepted connection!
+		go utils.HandleConnection(conn, err)
+
+	}
+}
+
+
+//func (serverConfig Server) Configure() {
+//	SERVER_CONFIG = serverConfig
+//	server.Configure()
+//}
