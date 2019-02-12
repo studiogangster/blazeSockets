@@ -65,7 +65,6 @@ func Setup(){
 
 		}
 		Inp := input("")
-		fmt.Println("Choose", Inp,Handlers[ Inp])
 
 		Handlers[Inp].(func())()
 

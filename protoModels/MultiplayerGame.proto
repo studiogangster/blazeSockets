@@ -13,6 +13,9 @@ enum MultiplayerMessageType {
   ROOM_KICK_PLAYER = 7;
   ROOM_SEND_MESSAGE = 8;
 
+  ROOM_GET_PLAYERS = 9;
+  PLAYERS_IN_ROOM = 10;
+
 }
 
 message MultiplayerMessage {
@@ -84,4 +87,12 @@ message RoomSendMessage {
   string roomToken = 1;
   string message  = 2;
 
+}
+
+message RoomGetPlayers {
+  string roomName = 1;
+}
+message PlayersInRoom {
+  repeated string players = 1;
+  string roomName = 2;
 }

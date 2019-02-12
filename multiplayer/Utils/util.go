@@ -12,7 +12,7 @@ import (
 "strconv"
 "sync"
 "sync/atomic"
-channel "blazesockets/multiplayer/Channel"
+channel "blazesockets/multiplayer/Multiplayer"
 "time"
 messageframe "blazesockets/multiplayer/MessageFrame"
 "github.com/gobwas/ws"

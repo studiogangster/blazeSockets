@@ -133,3 +133,30 @@ func RoomSendMessage(message *socketModels.RoomSendMessage) []byte {
 	return data
 }
 
+
+func RoomGetPlayers(message *socketModels.RoomGetPlayers ) []byte {
+	data, err := proto.Marshal(message)
+	if err != nil {
+		panic(err)
+	}
+	data, err = proto.Marshal(&socketModels.MultiplayerMessage{
+		MultiplayerMessageType: socketModels.MultiplayerMessageType_ROOM_GET_PLAYERS,
+		Messsage:               data,
+	})
+
+	return data
+}
+
+
+func PlayersInRoom(message *socketModels.PlayersInRoom ) []byte {
+	data, err := proto.Marshal(message)
+	if err != nil {
+		panic(err)
+	}
+	data, err = proto.Marshal(&socketModels.MultiplayerMessage{
+		MultiplayerMessageType: socketModels.MultiplayerMessageType_PLAYERS_IN_ROOM,
+		Messsage:               data,
+	})
+
+	return data
+}

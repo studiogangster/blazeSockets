@@ -15,7 +15,7 @@ import (
 	"github.com/mailru/easygo/netpoll"
 )
 
-// Channel is a wrapper around websocket, that encapsulates a mutex(for locking), socketName, underlying connection, and fildescriptor associated with the socket.
+// Multiplayer is a wrapper around websocket, that encapsulates a mutex(for locking), socketName, underlying connection, and fildescriptor associated with the socket.
 type Channel struct {
 	MessageFrame   messageframe.MessageFrame
 	Engaged        bool
@@ -26,7 +26,7 @@ type Channel struct {
 }
 
 // TODO Handle Edge case for parallel execution and deadlock
-// Channel.close() is used to gracefully close the connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
+// Multiplayer.close() is used to gracefully close the connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
 func (channel *Channel) close() {
 	fmt.Println("CLosing Socket")
 	memDb.SOCKETS.Remove(channel.SocketName)
@@ -128,7 +128,7 @@ func (channel *Channel) newParseFrame() {
 }
 
 
-// Channel.pause() is used to stop listening  connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
+// Multiplayer.pause() is used to stop listening  connection, remove from the concurrent hashmap, remove from the nepoller queue, and finaly close the file descriptor associated with it.
 func (channel *Channel) pause() {
 
 	return
@@ -160,7 +160,7 @@ func (channel *Channel) Write(wsFrame ws.Frame) {
 }
 
 func (channel *Channel)  Close() {
-	fmt.Println("CLosing Socket")
+
 	channel.close()
 }
 
