@@ -2,7 +2,6 @@ package channel
 
 import (
 	memDb "blazesockets/InMemoryDB"
-	"blazesockets/MessageHandler"
 	wsLogs "blazesockets/logs"
 	"blazesockets/multiplayer/MessageFrame"
 	"encoding/binary"
@@ -390,8 +389,8 @@ func MessageParser(MessageType byte, message []byte) {
 	case 'M':
 		// Handle multiplayer Events
 		//log.Println("Multiplayer", string(message))
-		msg := messageframer.ParseMultiplayerModel(message)
-		messageframer.HandleMultiplayerMessage(msg)
+		msg := ParseMultiplayerModel(message)
+		HandleMultiplayerMessage(msg)
 		fmt.Println("Multiplayer", string(message))
 		// data := new(socketModels.MultiplayerHandshake)
 		// proto.Unmarshal(message, data)
@@ -403,3 +402,4 @@ func MessageParser(MessageType byte, message []byte) {
 	}
 
 }
+
