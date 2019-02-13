@@ -12,7 +12,7 @@ func CreateRoom(roomName string) {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
 	room := make(map[string]bool)
-	// room := cMap.New()
+	// room := cMap.New() 
 	memory.ROOMS.SetIfAbsent(roomName, room)
 	// TOOD: Update REDIS about the create room
 	fmt.Println("Room Created ", room)
