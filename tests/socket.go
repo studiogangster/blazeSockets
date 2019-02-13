@@ -3,7 +3,6 @@ package main
 import (
 	"blazesockets/MessageCreator"
 	"blazesockets/multiplayer/MessageFrame"
-	"blazesockets/multiplayer/Room"
 	"bufio"
 	"fmt"
 	"net"
@@ -25,6 +24,9 @@ var Inputs = map[string]string{
 
 var Handlers = map[string]interface{}{
 	"1":  createRoom,
+	"2":  getRooms,
+	"3":  getPlayersInRoom,
+	"4":  createRoom,
 }
 
 func createRoom(){
@@ -43,13 +45,22 @@ func createRoom(){
 	sent, err := conn.Write(message)
 	fmt.Println(sent, err)
 
-
-
 }
 
+func getRooms(){
+	message := messagecreator.RoomGetDetails(&socketModels.RoomGetDetails{
+		RoomToken: "roomToken",
+	})
 
+	sent, err := conn.Write(message)
+	fmt.Println(sent, err)
+}
 
-
+func getPlayersInRoom(){
+	message := messagecreator.Pla(&socketModels.RoomGetDetails{
+		RoomToken: "roomToken",
+	})
+}
 
 
 
@@ -74,12 +85,7 @@ func Setup(){
 
 
 
-func getRooms(){
-	rooms := Room.GetRoomNames()
-	for room := range rooms{
-		fmt.Println("Room", room)
-	}
-}
+
 
 func input(action string) string {
 	reader := bufio.NewReader(os.Stdin)
