@@ -2,7 +2,7 @@ package messagecreator
 
 import (
 	socketModels "blazesockets/protoModels/models"
-
+    msgFrame "blazesockets/multiplayer/MessageFrame"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -18,6 +18,7 @@ func RoomCreate(message *socketModels.RoomCreate) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -32,6 +33,7 @@ func RoomJoin(message *socketModels.RoomJoin) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -46,6 +48,7 @@ func RoomLeave(message *socketModels.RoomLeave) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -60,6 +63,7 @@ func RoomDestroy(message *socketModels.RoomDestroy) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -74,6 +78,7 @@ func RoomHalt(message *socketModels.RoomHalt) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -88,6 +93,22 @@ func RoomGetDetails(message *socketModels.RoomGetDetails) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
+	return data
+}
+
+func RoomGetDetailsEvent(message *socketModels.GenericEvent) []byte {
+
+	data, err := proto.Marshal(message)
+	if err != nil {
+		panic(err)
+	}
+	data, err = proto.Marshal(&socketModels.MultiplayerMessage{
+		MultiplayerMessageType: socketModels.MultiplayerMessageType_ROOM_ADD_PLAYER,
+		Messsage:               data,
+	})
+
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -102,6 +123,7 @@ func RoomAddPlayer(message *socketModels.RoomAddPlayer) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -116,6 +138,7 @@ func RoomKickPlayer(message *socketModels.RoomKickPlayer) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -130,6 +153,7 @@ func RoomSendMessage(message *socketModels.RoomSendMessage) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -144,6 +168,7 @@ func RoomGetPlayers(message *socketModels.RoomGetPlayers ) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }
 
@@ -158,5 +183,6 @@ func PlayersInRoom(message *socketModels.PlayersInRoom ) []byte {
 		Messsage:               data,
 	})
 
+	data = msgFrame.CreateFrame('M', data).Bytes()
 	return data
 }

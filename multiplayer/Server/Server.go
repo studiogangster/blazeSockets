@@ -15,7 +15,8 @@ import (
 var Config serverConfig.ServerConfig = serverConfig.ServerConfig{}
 
 // Log Configurator
-var log = wsLogs.LogConfig{}
+var log = wsLogs.LogConfig{
+}
 
 
 

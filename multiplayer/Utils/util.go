@@ -134,6 +134,7 @@ func reigisterReadEvent(poller netpoll.Poller, channel *channel.Channel) {
 	err := poller.Start(channel.FileDescriptor, func(ev netpoll.Event) {
 		// COUNTER++
 		// fmt.Println(COUNTER)
+
 		go handleOnNetPollReadEventrigger(ev, poller, channel)
 	})
 
@@ -155,7 +156,7 @@ func reigisterReadEvent(poller netpoll.Poller, channel *channel.Channel) {
 // CreateChannel creates a channel from connection for read and write functionality!
 func CreateChannel(conn *net.Conn, sessionKey string) {
 
-	log.Println("Sessionkey", sessionKey)
+
 	channel := &channel.Channel{
 		Engaged:        false,
 		SocketName:     sessionKey,
@@ -169,7 +170,7 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 	}
 
 	memDb.SOCKETS.Set(sessionKey, channel)
-
+	log.Println("Sessionkey", sessionKey)
 	reigisterReadEvent(memDb.Poller, channel)
 
 	//AddPlayerToRoom("test", channel)
@@ -209,14 +210,14 @@ func HandleConnection(conn net.Conn, err error) {
 
 	authToken := make([]byte, 100)
 
-	_, err = conn.Read(authToken)
+	readBytes, error := conn.Read(authToken)
 
-	if err != nil {
+	if error != nil {
 		fmt.Println("Authtoken not recieved within timeout")
 		conn.Close()
 		return
 	}
-
+	authToken = authToken[:readBytes]
 	authenticate(authToken)
 
 	// Resets deadline to ensure, persistent socket connection

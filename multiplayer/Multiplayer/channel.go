@@ -23,6 +23,10 @@ type Channel struct {
 	SocketName     string
 	Conn           net.Conn // WebSocket connection
 	FileDescriptor *netpoll.Desc
+
+//	Multiplauer Specific
+
+	RoomName string
 }
 
 // TODO Handle Edge case for parallel execution and deadlock
@@ -45,10 +49,12 @@ func (channel *Channel) ReadMessageFrame() {
 
 }
 
+
 func (channel *Channel) newParseFrame() {
 	// Buffer to read from tcp socket directly
 
 	buffer := make([]byte, 100)
+
 	for {
 
 		// channel.conn.SetReadDeadline(time.Now().Add(1 * time.Second))
@@ -104,7 +110,7 @@ func (channel *Channel) newParseFrame() {
 					// fmt.Println("MESSAGE_DATA_FRAME = ", MESSAGE_DATA_FRAME)
 					channel.MessageFrame.MetaDataFilled = false
 
-					MessageParser(MessageType, MESSAGE_DATA_FRAME)
+					channel.MessageParser(MessageType, MESSAGE_DATA_FRAME)
 
 					// fmt.Println("*MESSAGE*", string(MESSAGE_DATA_FRAME))
 				} else {
@@ -114,7 +120,7 @@ func (channel *Channel) newParseFrame() {
 					channel.MessageFrame.MessageData.Read(MESSAGE_DATA_FRAME)
 					// fmt.Println("MESSAGE_DATA_FRAME > ", int(binary.LittleEndian.Uint16(channel.messageFrame.MessageLength)))
 					channel.MessageFrame.MetaDataFilled = false
-					MessageParser(MessageType, MESSAGE_DATA_FRAME)
+					channel.MessageParser(MessageType, MESSAGE_DATA_FRAME)
 				}
 
 			}
@@ -370,10 +376,11 @@ func (channel *Channel)  extractBufferFromMessageData(){
 
 
 // The place to parse the message recieved from the client
-func MessageParser(MessageType byte, message []byte) {
+func (channel *Channel) MessageParser(MessageType byte, message []byte) {
 	//fmt.Println("*MESSAGE*" , string(MessageType), string(message))
-
+	log.Println("MessageParser" )
 	defer func() {
+
 		if r := recover(); r != nil {
 			fmt.Println("MessageParser Failed", r)
 		}
@@ -390,7 +397,7 @@ func MessageParser(MessageType byte, message []byte) {
 		// Handle multiplayer Events
 		//log.Println("Multiplayer", string(message))
 		msg := ParseMultiplayerModel(message)
-		HandleMultiplayerMessage(msg)
+		channel.HandleMultiplayerMessage(msg)
 		fmt.Println("Multiplayer", string(message))
 		// data := new(socketModels.MultiplayerHandshake)
 		// proto.Unmarshal(message, data)

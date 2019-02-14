@@ -3,10 +3,13 @@ package channel
 import (
 	"blazesockets/InMemoryDB"
 	"fmt"
+	"log"
 )
 
 func BroadcastInRoom(roomName string, data []byte) {
 	room, ok := InMemoryDB.ROOMS.Get(roomName)
+
+	log.Println("Room", room)
 
 	if ok {
 		playerInRooms := room.(map[string]bool)

@@ -3,6 +3,7 @@ package main
 import (
 	"blazesockets/MessageCreator"
 	"blazesockets/multiplayer/MessageFrame"
+	"blazesockets/multiplayer/Utils"
 	"bufio"
 	"fmt"
 	"net"
@@ -24,9 +25,21 @@ var Inputs = map[string]string{
 
 var Handlers = map[string]interface{}{
 	"1":  createRoom,
-	"2":  getRooms,
+	"2":  joinRoom,
 	"3":  getPlayersInRoom,
-	"4":  createRoom,
+	"4":  listRooms,
+
+}
+
+func listRooms(){
+
+	message := messagecreator.RoomGetDetailsEvent(  &socketModels.GenericEvent{
+
+	} )
+
+	conn.Write(message)
+	//fmt.Println(sent, err)
+
 }
 
 func createRoom(){
@@ -38,7 +51,7 @@ func createRoom(){
 		RoomSize: "5",
 		RoomId: "1",
 		GameId:"2",
-		RoomToken: "roomToken",
+		RoomToken: roomName,
 		RoomTTL: "12",
 	} )
 
@@ -47,6 +60,16 @@ func createRoom(){
 
 }
 
+func joinRoom(){
+	roomName := input("Room name to join?\n")
+
+	message := messagecreator.RoomGetDetails(&socketModels.RoomJoin{
+		RoomToken: roomName,
+	})
+
+	sent, err := conn.Write(message)
+	fmt.Println(sent, err)
+}
 func getRooms(){
 	message := messagecreator.RoomGetDetails(&socketModels.RoomGetDetails{
 		RoomToken: "roomToken",
@@ -57,9 +80,11 @@ func getRooms(){
 }
 
 func getPlayersInRoom(){
-	message := messagecreator.Pla(&socketModels.RoomGetDetails{
-		RoomToken: "roomToken",
+	message := messagecreator.RoomGetPlayers(&socketModels.RoomGetPlayers{
+RoomName: "test",
 	})
+	sent, err := conn.Write(message)
+	fmt.Println(sent, err)
 }
 
 
@@ -76,7 +101,7 @@ func Setup(){
 
 		}
 		Inp := input("")
-
+		fmt.Println("INOUT", Inp)
 		Handlers[Inp].(func())()
 
 	}
@@ -131,12 +156,7 @@ func ReadingClient(conn net.Conn) {
 				}  )  )
 
 
-
 				break
-
-				//data :=
-				//proto.Unmarshal(MESSAGE_PAYLOAD, data)
-				//fmt.Println(data)
 
 			}
 
@@ -150,6 +170,8 @@ func ReadingClient(conn net.Conn) {
 
 func connectToGameServer(pName string) {
 	conn, _ = net.Dial("tcp", "127.0.0.1:8080")
+
+	go utils.CreateChannel(&conn, "client")
 
 	fmt.Println("Logging" , pName, "in..")
 	conn.Write( []byte(pName))

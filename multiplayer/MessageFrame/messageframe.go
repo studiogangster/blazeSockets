@@ -41,9 +41,6 @@ func setMessageType(buffer *bytes.Buffer, msg_type byte) {
 }
 
 
-
-
-
 func setMessageLength(buffer *bytes.Buffer, msg []byte) {
 	bs := make([]byte, 2)
 	binary.LittleEndian.PutUint16(bs, uint16(len(msg)))
@@ -64,16 +61,17 @@ func generateFramePayload(buffer *bytes.Buffer, msg []byte) {
 	setMessageData(buffer, msg)
 }
 
+
 // CreateFrame :Analyze  &  Creates Frame message:
 // 	Formula:
 //	   1 bytes (MessageType)
 //	 + 2 bytes (MessageLength)
 //	 + data->byteArray[].length
-func CreateFrame(message_type byte, data []byte) bytes.Buffer {
+func CreateFrame(message_type byte, data []byte) *bytes.Buffer {
 	buffer := bytes.Buffer{}
 	generateFrameMetaData(&buffer, message_type, data)
 	generateFramePayload(&buffer, data)
-	return buffer
+	return &buffer
 }
 
 

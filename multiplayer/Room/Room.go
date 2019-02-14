@@ -2,8 +2,9 @@ package Room
 
 import (
 	memory "blazesockets/InMemoryDB"
-	"fmt"
+	"log"
 )
+
 
 
 
@@ -12,17 +13,28 @@ func CreateRoom(roomName string) {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
 	room := make(map[string]bool)
-	// room := cMap.New() 
+	// room := cMap.New()
 	memory.ROOMS.SetIfAbsent(roomName, room)
 	// TOOD: Update REDIS about the create room
-	fmt.Println("Room Created ", room)
+	log.Println("Room Created ", roomName)
+
+}
+
+func AddPlayerToRoom(roomName string, socketName string) bool{
+	item, ok := memory.ROOMS.Get(roomName)
+
+	if ok {
+		item.(map[string]bool)[socketName] = true
+		//HandleMultiplayerEvents(socketModels.MultiplayerMessageType_ROOM_JOIN_EVENT, socketName, "Joined")
+	}
+
+	return ok
 
 }
 
 func GetRoomNames() []string {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
-
 	// room := cMap.New()
 	roomNames := make([]string , memory.ROOMS.Count())
 

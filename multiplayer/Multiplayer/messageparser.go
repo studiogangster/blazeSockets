@@ -2,6 +2,8 @@ package channel
 
 import (
 	"blazesockets/MessageCreator"
+	"blazesockets/multiplayer/MessageFrame"
+	"log"
 
 	room "blazesockets/multiplayer/Room"
 	socketModels "blazesockets/protoModels/models"
@@ -20,20 +22,47 @@ func ParseMultiplayerModel(payload []byte) *socketModels.MultiplayerMessage {
 	}
 	return multiplayerMessage
 }
-func HandleMultiplayerMessage(message *socketModels.MultiplayerMessage) {
+
+
+
+func HandleMultiplayerEvents(eventType socketModels.MultiplayerMessageType, roomName string,message string){
+
+
+	data , err := proto.Marshal(&socketModels.GenericEvent{
+		EventType: eventType,
+		Message: message,
+	})
+
+	if err == nil{
+		data = messageframe.CreateFrame('M', data).Bytes()
+		BroadcastInRoom( roomName,  data)
+	}
+
+
+
+}
+
+
+func (channel *Channel)  HandleMultiplayerMessage(message *socketModels.MultiplayerMessage) {
 
 	switch message.MultiplayerMessageType {
+	//Message Parser
 
 	case socketModels.MultiplayerMessageType_ROOM_CREATE:
 		fmt.Println("MultiplayerMessageType_ROOM_CREATE")
 		message := roomCreate(message.Messsage)
-
 		room.CreateRoom(message.RoomName)
 		break
 
 	case socketModels.MultiplayerMessageType_ROOM_JOIN:
 		fmt.Println("MultiplayerMessageType_ROOM_JOIN")
-		roomJoin(message.Messsage)
+		message :=roomJoin(message.Messsage)
+		log.Println("ROOMJOIN", message.RoomToken)
+		ok := room.AddPlayerToRoom(message.RoomToken , channel.SocketName)
+		if ok{
+			HandleMultiplayerEvents(socketModels.MultiplayerMessageType_ROOM_JOIN_EVENT, channel.SocketName, "Joined")
+			channel.RoomName = message.RoomToken
+		}
 		break
 
 	case socketModels.MultiplayerMessageType_ROOM_LEAVE:
@@ -48,9 +77,18 @@ func HandleMultiplayerMessage(message *socketModels.MultiplayerMessage) {
 		fmt.Println("MultiplayerMessageType_ROOM_HALT")
 		roomHalt(message.Messsage)
 		break
-	case socketModels.MultiplayerMessageType_ROOM_GET_DETAILS:
-		fmt.Println("MultiplayerMessageType_ROOM_GET_DETAILS")
-		roomGetDetails(message.Messsage)
+	case socketModels.MultiplayerMessageType_ROOM_GET_DETAILS_EVENT:
+		fmt.Println("MultiplayerMessageType_ROOM_GET_DETAILS_EVENT")
+		message := roomGetDetails(message.Messsage)
+		roomNames := room.GetRoomNames()
+
+		payload := messagecreator.RoomGetDetails(&socketModels.RoomGetDetails{
+			RoomToken: message.RoomToken,
+			Players:roomNames,
+		})
+
+		BroadcastInRoom( channel.RoomName, payload )
+
 		break
 
 	case socketModels.MultiplayerMessageType_ROOM_ADD_PLAYER:
@@ -74,15 +112,10 @@ func HandleMultiplayerMessage(message *socketModels.MultiplayerMessage) {
 
 		players := room.GetPlayersInRoom(message.RoomName)
 
-
-
 		payload := messagecreator.PlayersInRoom(&socketModels.PlayersInRoom{
 			RoomName: message.RoomName,
 			Players: players,
 		})
-
-
-		fmt.Println(payload)
 
 		BroadcastInRoom( message.RoomName, payload )
 
@@ -152,6 +185,8 @@ func roomGetDetails(payload []byte) *socketModels.RoomGetDetails {
 	}
 	return message
 }
+
+
 
 func roomAddPlayer(payload []byte) *socketModels.RoomAddPlayer {
 
