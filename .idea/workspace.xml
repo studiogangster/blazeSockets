@@ -2,18 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0af9af4f-ecfa-4ce4-8027-0aeb9bb3f073" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/protoModels/GameEvents.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MessageCreator/Event.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MessageCreator/Request.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MessageCreator/Response.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/protoModels/GameRequest.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/protoModels/_MultiplayerGame._proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MessageCreator/Multiplayer.go" beforeDir="false" afterPath="$PROJECT_DIR$/MessageCreator/Multiplayer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/multiplayer/MessageFrame/messageframe.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/MessageFrame/messageframe.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MessageCreator/Multiplayer.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/multiplayer/Multiplayer/channel.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Multiplayer/channel.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Multiplayer/_messageparser._go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/multiplayer/Multiplayer/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Multiplayer/room.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/multiplayer/Room/Room.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Room/Room.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/multiplayer/Server/Server.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Server/Server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/multiplayer/Utils/util.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Utils/util.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protoModels/MultiplayerGame.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/MultiplayerGame.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protoModels/models/MultiplayerGame.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/models/MultiplayerGame.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/AnalyticsEvent.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/AnalyticsEvent.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/Authentication.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/Authentication.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/Configurator.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/Configurator.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/GameEvents.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/GameEvents.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/MultiplayerGame.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/GameResponse.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/Notification.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/Notification.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/models/AnalyticsEvent.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/models/AnalyticsEvent.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/models/Authentication.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/models/Authentication.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/models/Configurator.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/models/Configurator.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/models/MultiplayerGame.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/protoModels/models/Notification.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protoModels/models/Notification.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/socket.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/socket.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,69 +35,22 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/multiplayer/Server/Server.go">
+        <entry file="file://$PROJECT_DIR$/multiplayer/Room/Room.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="16" lean-forward="true" selection-start-line="13" selection-start-column="16" selection-end-line="13" selection-end-column="16" />
-              <folding>
-                <element signature="e#16#185#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/socket.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="28" column="27" lean-forward="true" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
+            <state relative-caret-position="450">
+              <caret line="33" column="35" lean-forward="true" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/protoModels/GameEvents.proto">
+        <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/channel.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="20" lean-forward="true" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MessageCreator/Multiplayer.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="58">
-              <caret line="99" column="24" selection-start-line="99" selection-start-column="5" selection-end-line="99" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/protoModels/MultiplayerGame.proto">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="327">
-              <caret line="114" column="20" selection-start-line="114" selection-start-column="8" selection-end-line="114" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/multiplayer/Room/Room.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="32" column="1" lean-forward="true" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="193" column="34" selection-start-line="193" selection-start-column="34" selection-end-line="193" selection-end-column="34" />
+            <state relative-caret-position="267">
+              <caret line="458" column="9" selection-start-line="458" selection-start-column="9" selection-end-line="458" selection-end-column="9" />
               <folding>
-                <element signature="e#17#237#0" expanded="true" />
+                <element signature="n#!!block;n#min#0" />
+                <element signature="n#!!block;n#extractBufferFromMessageData#0" />
               </folding>
             </state>
           </provider>
@@ -96,8 +59,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/multiplayer/Utils/util.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="219" column="36" selection-start-line="219" selection-start-column="36" selection-end-line="219" selection-end-column="36" />
+            <state relative-caret-position="-2440">
+              <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
               <folding>
                 <element signature="n#!!block;n#PollStatus#0" />
                 <element signature="n#!!block;n#BroadCastSync#0" />
@@ -108,19 +71,37 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/room.go">
+        <entry file="file://$PROJECT_DIR$/tests/socket.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="160">
+              <caret line="81" column="41" selection-start-line="81" selection-start-column="41" selection-end-line="81" selection-end-column="41" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vendor/github.com/orcaman/concurrent-map/concurrent_map.go">
+        <entry file="file://$PROJECT_DIR$/MessageCreator/Request.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="159">
-              <caret line="71" selection-start-line="71" selection-end-line="71" />
+            <state relative-caret-position="150">
+              <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MessageCreator/Response.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="9" column="12" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/room.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -136,24 +117,9 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>input(</find>
-      <find>createRoom</find>
-      <find>conn</find>
-      <find>messagecreator</find>
-      <find>getro</find>
-      <find>connectToGameServer</find>
-      <find>writeto</find>
-      <find>createfra</find>
-      <find>RoomCreate</find>
-      <find>Buffer</find>
-      <find>creat</find>
-      <find>Channel{</find>
-      <find>channel{</find>
-      <find>clientParseFrame</find>
       <find>channel.</find>
       <find>channel</find>
       <find>createroo</find>
-      <find>MessageParser</find>
       <find>multi</find>
       <find>mars</find>
       <find>channe</find>
@@ -165,7 +131,22 @@
       <find>room2</find>
       <find>join</find>
       <find>GenericEvent</find>
+      <find>HandleMultiplayerMessage</find>
+      <find>joinro</find>
+      <find>joinroo</find>
+      <find>createev</find>
+      <find>createe</find>
       <find>list</find>
+      <find>MessageParser</find>
+      <find>&quot;messageparser</find>
+      <find>b</find>
+      <find>handle</find>
+      <find>messagepa</find>
+      <find>broadcas</find>
+      <find>chan</find>
+      <find>GameRequestType_GET_ROOMS_REQUEST</find>
+      <find>GameRequestType_LEAVE_ROOM_REQUEST</find>
+      <find>'c</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.10.3/libexec" />
@@ -178,9 +159,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/websockets/socket_test.go" />
-        <option value="$PROJECT_DIR$/websockets/Protocol.go" />
-        <option value="$PROJECT_DIR$/InMemoryData/Room.go" />
         <option value="$PROJECT_DIR$/InMemoryData/Protocol.go" />
         <option value="$PROJECT_DIR$/MessageHandler/roomHandler.go" />
         <option value="$PROJECT_DIR$/InMemoryDB/ROOMS.go" />
@@ -211,17 +189,27 @@
         <option value="$PROJECT_DIR$/logs/logs.go" />
         <option value="$PROJECT_DIR$/multiplayer/Server/Server.go" />
         <option value="$PROJECT_DIR$/multiplayer/MessageFrame/messageframe.go" />
-        <option value="$PROJECT_DIR$/protolayer/MessageHandler.go" />
         <option value="$PROJECT_DIR$/multiplayer/Multiplayer/client.go" />
-        <option value="$PROJECT_DIR$/multiplayer/Room/Room.go" />
-        <option value="$PROJECT_DIR$/multiplayer/Multiplayer/room.go" />
         <option value="$PROJECT_DIR$/multiplayer/Utils/util.go" />
-        <option value="$PROJECT_DIR$/multiplayer/Multiplayer/channel.go" />
         <option value="$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go" />
-        <option value="$PROJECT_DIR$/MessageCreator/Multiplayer.go" />
         <option value="$PROJECT_DIR$/protoModels/MultiplayerGame.proto" />
-        <option value="$PROJECT_DIR$/tests/socket.go" />
+        <option value="$PROJECT_DIR$/protoModels/GameRequests.proto" />
+        <option value="$PROJECT_DIR$/protoModels/Notification.proto" />
+        <option value="$PROJECT_DIR$/protoModels/Configurator.proto" />
+        <option value="$PROJECT_DIR$/protoModels/Authentication.proto" />
+        <option value="$PROJECT_DIR$/protoModels/AnalyticsEvent.proto" />
+        <option value="$PROJECT_DIR$/protoModels/GameRequest.proto" />
+        <option value="$PROJECT_DIR$/MessageCreator/Multiplayer.go" />
+        <option value="$PROJECT_DIR$/protolayer/MessageHandler.go" />
+        <option value="$PROJECT_DIR$/MessageCreator/Event.go" />
+        <option value="$PROJECT_DIR$/MessageCreator/Request.go" />
+        <option value="$PROJECT_DIR$/MessageCreator/Response.go" />
         <option value="$PROJECT_DIR$/protoModels/GameEvents.proto" />
+        <option value="$PROJECT_DIR$/multiplayer/Multiplayer/room.go" />
+        <option value="$PROJECT_DIR$/protoModels/GameResponse.proto" />
+        <option value="$PROJECT_DIR$/tests/socket.go" />
+        <option value="$PROJECT_DIR$/multiplayer/Room/Room.go" />
+        <option value="$PROJECT_DIR$/multiplayer/Multiplayer/channel.go" />
       </list>
     </option>
   </component>
@@ -274,6 +262,12 @@
               <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
               <item name="blazesockets" type="462c0819:PsiDirectoryNode" />
               <item name="multiplayer" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
+              <item name="blazesockets" type="462c0819:PsiDirectoryNode" />
+              <item name="multiplayer" type="462c0819:PsiDirectoryNode" />
               <item name="Utils" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -289,35 +283,7 @@
             <path>
               <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
               <item name="blazesockets" type="462c0819:PsiDirectoryNode" />
-              <item name="protoModels" type="462c0819:PsiDirectoryNode" />
-              <item name="models" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
-              <item name="blazesockets" type="462c0819:PsiDirectoryNode" />
               <item name="tests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-            </path>
-            <path>
-              <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="blazesockets" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="log" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -345,11 +311,11 @@
       <recent name="$PROJECT_DIR$/multiplayer/Room" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/MessageCreator" />
       <recent name="$PROJECT_DIR$/protoModels" />
       <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/multiplayer" />
       <recent name="$PROJECT_DIR$/InMemoryDB" />
-      <recent name="$PROJECT_DIR$/websockets" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -365,6 +331,17 @@
     </option>
   </component>
   <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration name="go build  tests/socket.go" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="blazesockets" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/|$PROJECT_DIR$/tests" />
+      <package value="blazesockets" />
+      <directory value="$PROJECT_DIR$/" />
+      <option name="run" value="false" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="blazesockets" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -374,31 +351,25 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="socket_test.go (1)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="socket.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
       <module name="blazesockets" />
       <working_directory value="$PROJECT_DIR$/tests" />
-      <framework value="gotest" />
+      <framework value="gocheck" />
       <kind value="FILE" />
       <package value="blazesockets" />
       <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/tests/socket_test.go" />
+      <filePath value="$PROJECT_DIR$/websockets/socket_test.go|$PROJECT_DIR$/tests/socket.go|$PROJECT_DIR$/tests/socket.go" />
       <method v="2" />
     </configuration>
-    <configuration name="socket_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="blazesockets" />
-      <working_directory value="$PROJECT_DIR$/websockets" />
-      <framework value="gotest" />
-      <kind value="FILE" />
-      <package value="blazesockets" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/websockets/socket_test.go" />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build  tests/socket.go" />
+      <item itemvalue="Go Build.go build main.go" />
+      <item itemvalue="Go Test.socket.go" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Test.socket_test.go (1)" />
-        <item itemvalue="Go Test.socket_test.go" />
+        <item itemvalue="Go Test.socket.go" />
       </list>
     </recent_temporary>
   </component>
@@ -451,16 +422,16 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32876712" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32876712" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49928468" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49928468" weight="0.32876712" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49642345" visible="true" weight="0.32876712" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49642345" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32876712" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32876712" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.5007153" side_tool="true" weight="0.4" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.5035765" side_tool="true" weight="0.4" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5007153" side_tool="true" weight="0.32465753" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -475,46 +446,21 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/multiplayer/Multiplayer/room.go</url>
-          <line>9</line>
-          <properties />
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go</url>
+          <url>file://$PROJECT_DIR$/multiplayer/Multiplayer/_messageparser._go</url>
           <line>30</line>
           <properties />
           <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/multiplayer/Multiplayer/channel.go</url>
+          <line>397</line>
+          <properties />
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/protoModels/models/AnalyticsEvent.pb.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/protoModels/messageMapper/msgMap.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../github.com/orcaman/concurrent-map/concurrent_map.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/InMemoryData/Room.go" />
-    <entry file="file://$PROJECT_DIR$/InMemoryData/Protocol.go" />
-    <entry file="file://$PROJECT_DIR$/websockets/Room.go" />
-    <entry file="file://$PROJECT_DIR$/blazeconfig/configuration.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/InMemoryDB/Channel.go" />
-    <entry file="file://$PROJECT_DIR$/websockets/Multiplayer.go" />
-    <entry file="file://$PROJECT_DIR$/websockets/Protocol.go" />
-    <entry file="file://$PROJECT_DIR$/websockets/Channel.go" />
-    <entry file="file://$PROJECT_DIR$/websockets/wsServer.go" />
-    <entry file="file://$PROJECT_DIR$/websockets/utils.go" />
     <entry file="file://$PROJECT_DIR$/MessageHandler/roomHandler.go" />
     <entry file="file://$PROJECT_DIR$/InMemoryDB/Sockets.go">
       <provider selected="true" editor-type-id="text-editor">
@@ -590,13 +536,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/multiplayer/Voip/udpServer.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="16" column="20" lean-forward="true" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/logs/logs.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -632,29 +571,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/multiplayer/GameHelper.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" selection-start-line="2" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/client.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="39" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="39" />
           <folding>
             <element signature="e#17#68#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/protolayer/MessageHandler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="20" column="26" lean-forward="true" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
-          <folding>
-            <element signature="e#24#118#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -690,17 +612,208 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/models/MultiplayerGame.pb.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="373" column="1" lean-forward="true" selection-start-line="373" selection-start-column="1" selection-end-line="373" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/_MultiplayerGame._proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1470">
+          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/Configurator.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/Authentication.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/AnalyticsEvent.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MessageCreator/Multiplayer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="5" lean-forward="true" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
+          <folding>
+            <element signature="e#24#171#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multiplayer/Voip/udpServer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multiplayer/Server/Server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
+          <folding>
+            <element signature="e#16#185#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/_messageparser._go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/models/GameEvents.pb.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="71" column="43" lean-forward="true" selection-start-line="71" selection-start-column="43" selection-end-line="71" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protolayer/MessageHandler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="101">
+          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="e#24#118#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multiplayer/GameHelper.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MessageCreator/Event.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/Notification.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="21" lean-forward="true" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/room.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/go/1.10.3/libexec/src/log/log.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="299" selection-start-line="299" selection-end-line="299" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/models/GameRequest.pb.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MessageCreator/Request.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MessageCreator/Response.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="9" column="12" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/GameRequest.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" selection-start-line="7" selection-end-line="16" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/GameEvents.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="26" column="19" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/GameResponse.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="25" lean-forward="true" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protoModels/models/GameResponse.pb.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="70" column="4" selection-start-line="70" selection-start-column="4" selection-end-line="70" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/socket.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="81" column="41" selection-start-line="81" selection-start-column="41" selection-end-line="81" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/orcaman/concurrent-map/concurrent_map.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="71" selection-start-line="71" selection-end-line="71" />
+        <state relative-caret-position="154">
+          <caret line="116" column="23" selection-start-line="116" selection-start-column="23" selection-end-line="116" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multiplayer/Room/Room.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="33" column="35" lean-forward="true" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/multiplayer/Utils/util.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="219" column="36" selection-start-line="219" selection-start-column="36" selection-end-line="219" selection-end-column="36" />
+        <state relative-caret-position="-2440">
+          <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
           <folding>
             <element signature="n#!!block;n#PollStatus#0" />
             <element signature="n#!!block;n#BroadCastSync#0" />
@@ -709,91 +822,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/room.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/protoModels/models/MultiplayerGame.pb.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="373" column="1" lean-forward="true" selection-start-line="373" selection-start-column="1" selection-end-line="373" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/channel.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="26" column="24" lean-forward="true" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
+        <state relative-caret-position="267">
+          <caret line="458" column="9" selection-start-line="458" selection-start-column="9" selection-end-line="458" selection-end-column="9" />
           <folding>
-            <element signature="e#17#246#0" expanded="true" />
             <element signature="n#!!block;n#min#0" />
             <element signature="n#!!block;n#extractBufferFromMessageData#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/multiplayer/Multiplayer/messageparser.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="193" column="34" selection-start-line="193" selection-start-column="34" selection-end-line="193" selection-end-column="34" />
-          <folding>
-            <element signature="e#17#237#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/multiplayer/Room/Room.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="32" column="1" lean-forward="true" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MessageCreator/Multiplayer.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="58">
-          <caret line="99" column="24" selection-start-line="99" selection-start-column="5" selection-end-line="99" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/multiplayer/Server/Server.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="16" lean-forward="true" selection-start-line="13" selection-start-column="16" selection-end-line="13" selection-end-column="16" />
-          <folding>
-            <element signature="e#16#185#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/protoModels/MultiplayerGame.proto">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="114" column="20" selection-start-line="114" selection-start-column="8" selection-end-line="114" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/socket.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="28" column="27" lean-forward="true" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/protoModels/GameEvents.proto">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="20" lean-forward="true" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
         </state>
       </provider>
     </entry>

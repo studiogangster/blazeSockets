@@ -1,0 +1,26 @@
+syntax = "proto3";
+package proxy.proto.models;
+
+
+enum GameRequestType {
+
+  //  Messages
+  CREATE_ROOM_REQUEST = 0;
+  JOIN_ROOM_REQUEST = 1;
+  LEAVE_ROOM_REQUEST = 2;
+  DESTROY_ROOM_REQUEST = 3;
+  HALT_ROOM_REQUEST = 4;
+  GET_ROOMS_REQUEST = 5;
+  GET_ROOM_DETAILS_REQUEST = 6;
+  KICK_PLAYER_FROM_ROOM_REQUEST = 7;
+  SEND_MESSAGE_REQUEST = 8;
+  GET_STATUS_REQUEST = 9;
+
+
+}
+
+message GameRequest {
+  GameRequestType gameRequestType = 1;
+  bytes messsage = 2;
+}
+

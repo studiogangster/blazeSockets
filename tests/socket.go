@@ -2,14 +2,12 @@ package main
 
 import (
 	"blazesockets/MessageCreator"
-	"blazesockets/multiplayer/MessageFrame"
 	"blazesockets/multiplayer/Utils"
 	"bufio"
 	"fmt"
 	"net"
 	"os"
 	"strings"
-	"time"
 
 	socketModels "blazesockets/protoModels/models"
 )
@@ -19,40 +17,44 @@ var conn net.Conn
 var Inputs = map[string]string{
 	"1": "Create a room",
 	"2": "Join a room",
+	"6": "Leave a room",
 	"3": "Get player in rooms",
 	"4": "Get list of rooms",
+	"5": "Send Message",
 }
 
 var Handlers = map[string]interface{}{
 	"1":  createRoom,
 	"2":  joinRoom,
+	"6":  leaveRoom,
 	"3":  getPlayersInRoom,
-	"4":  listRooms,
+	"4":  getRooms,
+	"5":  sendMessage,
 
 }
 
-func listRooms(){
 
-	message := messagecreator.RoomGetDetailsEvent(  &socketModels.GenericEvent{
+func sendMessage(){
+	message := input("Message to send?\n")
 
+
+	msg := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_SEND_MESSAGE_REQUEST,
+		Messsage: []byte(message),
 	} )
 
-	conn.Write(message)
-	//fmt.Println(sent, err)
+	sent, err := conn.Write(msg)
+	fmt.Println(sent, err)
 
 }
 
 func createRoom(){
-	roomName := input("Room name to join?\n")
-	fmt.Println("Joining", roomName, "room")
+	roomName := input("Room name to create?\n")
 
-	message := messagecreator.RoomCreate(  &socketModels.RoomCreate{
-		RoomName: roomName,
-		RoomSize: "5",
-		RoomId: "1",
-		GameId:"2",
-		RoomToken: roomName,
-		RoomTTL: "12",
+
+	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_CREATE_ROOM_REQUEST,
+		Messsage: []byte(roomName),
 	} )
 
 	sent, err := conn.Write(message)
@@ -63,26 +65,49 @@ func createRoom(){
 func joinRoom(){
 	roomName := input("Room name to join?\n")
 
-	message := messagecreator.RoomGetDetails(&socketModels.RoomJoin{
-		RoomToken: roomName,
-	})
+
+	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_JOIN_ROOM_REQUEST,
+		Messsage: []byte(roomName),
+	} )
+
+	sent, err := conn.Write(message)
+	fmt.Println(sent, err)
+}
+func leaveRoom(){
+
+
+	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_LEAVE_ROOM_REQUEST,
+		Messsage: []byte("I want to leave"),
+	} )
 
 	sent, err := conn.Write(message)
 	fmt.Println(sent, err)
 }
 func getRooms(){
-	message := messagecreator.RoomGetDetails(&socketModels.RoomGetDetails{
-		RoomToken: "roomToken",
-	})
+
+
+	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_GET_ROOMS_REQUEST,
+		Messsage: []byte("pop"),
+	} )
+
 
 	sent, err := conn.Write(message)
+
 	fmt.Println(sent, err)
 }
 
 func getPlayersInRoom(){
-	message := messagecreator.RoomGetPlayers(&socketModels.RoomGetPlayers{
-RoomName: "test",
-	})
+	roomName := input("Room name to query for players?\n")
+
+
+	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_GET_ROOM_DETAILS_REQUEST,
+		Messsage: []byte(roomName),
+	} )
+
 	sent, err := conn.Write(message)
 	fmt.Println(sent, err)
 }
@@ -91,7 +116,7 @@ RoomName: "test",
 
 func Setup(){
 
-	playerName := input("Enter playername\n")
+	playerName := input("Enter playername?\n")
 	connectToGameServer(playerName)
 
 	for {
@@ -129,43 +154,6 @@ func Login(conn net.Conn) {
 	send(&conn, userName)
 }
 
-func ReadingClient(conn net.Conn) {
-
-
-	Login(conn)
-
-	authToken := make([]byte, 100)
-	for {
-		conn.SetReadDeadline(time.Now().Add(3 * time.Second))
-		bytesRead, _ := conn.Read(authToken)
-		if bytesRead >= 3 {
-
-			MESSAGE_TYPE := authToken[0]
-			//MESSAGE_LENGTH := authToken[1:3]
-			//MESSAGE_PAYLOAD := authToken[3:]
-
-			//fmt.Println("PROTO", MESSAGE_TYPE, MESSAGE_PAYLOAD, MESSAGE_LENGTH)
-
-			switch MESSAGE_TYPE {
-
-			case 'M':
-
-
-				conn.Write( messagecreator.RoomGetPlayers( &socketModels.RoomGetPlayers{
-					RoomName:"test",
-				}  )  )
-
-
-				break
-
-			}
-
-			fmt.Println(authToken[:bytesRead])
-		}
-
-	}
-
-}
 
 
 func connectToGameServer(pName string) {
@@ -177,45 +165,6 @@ func connectToGameServer(pName string) {
 	conn.Write( []byte(pName))
 
 
-}
-
-func ConnectToGameServer(pName string) {
-	conn, _ := net.Dial("tcp", "127.0.0.1:8080")
-	go ReadingClient(conn)
-
-	msg := messageframe.CreateFrame('A', []byte( pName))
-	fmt.Fprintf(conn, string(msg.Bytes()))
-	time.Sleep(2 * time.Second)
-	for {
-
-		fmt.Fprintf(conn, string(msg.Bytes()))
-		fmt.Println("DATA SENT")
-		// listen for reply
-		time.Sleep(3 * time.Second)
-
-		message := messagecreator.RoomCreate( &socketModels.RoomCreate{
-			RoomToken: "roomToken",
-			GameId: "gId",
-			RoomId: "rId",
-			RoomName: "rName",
-			RoomSize: "10",
-		} )
-
-
-		message = messagecreator.RoomAddPlayer( &socketModels.RoomAddPlayer{
-			RoomToken: "playerRoomToken",
-		} )
-
-
-
-		msg = messageframe.CreateFrame('M', message)
-		fmt.Fprintf(conn, string(msg.Bytes()))
-
-		fmt.Println("DATA SENT")
-		fmt.Println("DATA SENT")
-		// listen for reply
-		time.Sleep(3 * time.Second)
-	}
 }
 
 func main() {

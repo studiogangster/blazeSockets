@@ -2,12 +2,17 @@ package channel
 
 import (
 	memDb "blazesockets/InMemoryDB"
+	"blazesockets/MessageCreator"
 	wsLogs "blazesockets/logs"
 	"blazesockets/multiplayer/MessageFrame"
+	"blazesockets/multiplayer/Room"
+	"blazesockets/protoModels/models"
 	"encoding/binary"
 	"fmt"
+	"github.com/golang/protobuf/proto"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 
@@ -159,6 +164,11 @@ func (channel *Channel) writer(wsFrame ws.Frame) {
 }
 
 
+//Public Functions
+// Writer is used to push websocket frame through the socket
+func (channel *Channel) Send(payload []byte) {
+	channel.Conn.Write(payload)
+}
 //Public Functions
 // Writer is used to push websocket frame through the socket
 func (channel *Channel) Write(wsFrame ws.Frame) {
@@ -378,7 +388,6 @@ func (channel *Channel)  extractBufferFromMessageData(){
 // The place to parse the message recieved from the client
 func (channel *Channel) MessageParser(MessageType byte, message []byte) {
 	//fmt.Println("*MESSAGE*" , string(MessageType), string(message))
-	log.Println("MessageParser" )
 	defer func() {
 
 		if r := recover(); r != nil {
@@ -392,13 +401,26 @@ func (channel *Channel) MessageParser(MessageType byte, message []byte) {
 		// Handle Authentication Event
 		log.Println("Authentication", string(message))
 		break
+	case 'C':
+		// Handle Authentication Event
+		log.Println("Game Request", string(message))
+		channel.HandleRequest(message)
+		break
+	case 'E':
+		// Handle Authentication Event
+		log.Println("Game Event", string(message))
+		channel.HandleEvent(message)
+		break
 
-	case 'M':
+	case 'S':
+		log.Println("Game Response", string(message))
+		channel.HandleResponse(message)
+
 		// Handle multiplayer Events
 		//log.Println("Multiplayer", string(message))
-		msg := ParseMultiplayerModel(message)
-		channel.HandleMultiplayerMessage(msg)
-		fmt.Println("Multiplayer", string(message))
+		//msg := ParseMultiplayerModel(message)
+		//channel.HandleMultiplayerMessage(msg)
+		//fmt.Println("Multiplayer", string(message))
 		// data := new(socketModels.MultiplayerHandshake)
 		// proto.Unmarshal(message, data)
 		// fmt.Println(data)
@@ -408,5 +430,129 @@ func (channel *Channel) MessageParser(MessageType byte, message []byte) {
 
 	}
 
+}
+
+func (channel *Channel) HandleRequest(msg []byte) {
+	message := new(proxy_proto_models.GameRequest)
+	err := proto.Unmarshal(msg, message)
+	if err != nil {
+		panic(err)
+
+	}
+
+	var eventToBroadcast []byte = nil
+
+	roomName := channel.RoomName
+
+	switch message.GameRequestType {
+
+
+	case proxy_proto_models.GameRequestType_CREATE_ROOM_REQUEST:
+		Room.CreateRoom(string(message.Messsage))
+
+		channel.Send( messagecreator.CreateEvent(&proxy_proto_models.GameEvent{
+			Messsage: message.Messsage,
+			GameEventType:proxy_proto_models.GameEventType_ROOM_CREATED_EVENT,
+		} ) )
+
+
+	break
+
+	case proxy_proto_models.GameRequestType_LEAVE_ROOM_REQUEST:
+		Room.LeaveRoom(channel.RoomName  , channel.SocketName)
+
+		channel.RoomName = string("")
+
+		channel.Send( messagecreator.CreateResponse(&proxy_proto_models.GameResponse{
+			Messsage: []byte("You Left"),
+			Success: true,
+			GameResponseType:proxy_proto_models.GameResponseType_LEAVE_ROOM_RESPONSE,
+		} ) )
+
+		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
+			GameEventType:proxy_proto_models.GameEventType_ROOM_LEFT_EVENT,
+			Messsage: message.Messsage,
+			Success:true,
+		} )
+
+		break
+
+
+	case proxy_proto_models.GameRequestType_JOIN_ROOM_REQUEST:
+		Room.AddPlayerToRoom( string(message.Messsage) , channel.SocketName)
+		channel.RoomName = string(message.Messsage)
+
+		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
+			GameEventType:proxy_proto_models.GameEventType_ROOM_JOINED_EVENT,
+			Messsage: message.Messsage,
+			Success:true,
+		} )
+		break
+
+	case proxy_proto_models.GameRequestType_GET_ROOMS_REQUEST:
+
+		rooms := strings.Join(Room.GetRoomNames( )," ")
+
+		channel.Send( messagecreator.CreateResponse(&proxy_proto_models.GameResponse{
+			Messsage: []byte(rooms),
+			GameResponseType:proxy_proto_models.GameResponseType_GET_ROOMS_RESPONSE,
+		} ) )
+
+		break
+	case proxy_proto_models.GameRequestType_SEND_MESSAGE_REQUEST:
+
+		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
+			GameEventType:proxy_proto_models.GameEventType_GAME_MESSAGE_EVENT,
+			Messsage: message.Messsage,
+			Success:true,
+		} )
+
+		break
+
+	default:
+
+	}
+	if eventToBroadcast != nil{
+		BroadcastInRoom(roomName , eventToBroadcast)
+	}
+
+	log.Println("Handling Request from", channel.SocketName, "for room",  channel.RoomName)
+}
+
+func (channel *Channel) HandleEvent(msg []byte) {
+	message := new(proxy_proto_models.GameEvent)
+	err := proto.Unmarshal(msg, message)
+	if err != nil {
+		panic(err)
+
+	}
+
+	switch message.GameEventType {
+
+		case proxy_proto_models.GameEventType_GAME_CREATED_EVENT:
+
+		break
+
+		case proxy_proto_models.GameEventType_GAME_DESTROYED_EVENT:
+
+		break
+
+		default:
+
+	}
+
+
+	log.Println("Recieved Event from", channel.SocketName, "for Event:",  message.GameEventType)
+}
+
+func (channel *Channel) HandleResponse(msg []byte) {
+	message := new(proxy_proto_models.GameResponse)
+	err := proto.Unmarshal(msg, message)
+	if err != nil {
+		panic(err)
+
+	}
+
+	log.Println("Response", string(msg))
 }
 

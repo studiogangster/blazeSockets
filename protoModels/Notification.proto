@@ -1,5 +1,5 @@
 syntax = "proto3";
-package com.example.proto;
+package proxy.proto.models;
 
 enum NotificationIntent {
   OPEN_APP = 0;

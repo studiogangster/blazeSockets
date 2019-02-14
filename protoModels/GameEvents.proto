@@ -1,104 +1,30 @@
 syntax = "proto3";
-package com.example.proto;
-
-enum GameEventTypes {
+package proxy.proto.models;
 
 
-  ROOM_CREATE_EVENT = 0;
-  ROOM_JOIN_EVENT = 1;
-  ROOM_LEAVE_EVENT = 2;
-  ROOM_DESTROY_EVENT = 3;
-  ROOM_HALT_EVENT = 4;
-  ROOM_GET_DETAILS_EVENT = 5;
-  ROOM_ADD_PLAYER_EVENT = 6;
-  ROOM_KICK_PLAYER_EVENT = 7;
-  ROOM_SEND_MESSAGE_EVENT = 8;
+
+enum GameEventType {
+
+  ROOM_CREATED_EVENT = 0;
+  ROOM_JOINED_EVENT = 1;
+  ROOM_LEFT_EVENT = 2;
+  ROOM_DESTROYED_EVENT = 3;
+  ROOM_FULL_EVENT = 4;
+  GAME_PAUSED_EVENT = 5;
+  GAME_RESUMED_EVENT = 6;
+  GAME_CREATED_EVENT = 7;
+  GAME_DESTROYED_EVENT = 8;
+  GAME_FINISHED_EVENT = 9;
+  GAME_STOPPED_EVENT = 10;
+  GAME_MESSAGE_EVENT = 11;
 
 
-}
-
-message MultiplayerMessage {
-  MultiplayerMessageType multiplayerMessageType = 1;
-  bytes messsage = 2;
-}
-
-
-message RoomCreate {
-  
-  string roomToken  = 1;
-  string roomName  = 2;
-  string roomSize = 3;
-  string roomTTL = 4;
-  string roomId = 5;
-  string gameId = 6;
 
 }
 
-
-message RoomJoin {
-  
-  string roomToken  = 1;
-
+message GameEvent {
+  GameEventType gameEventType = 1;
+  bool success = 2;
+  bytes messsage = 3;
 }
 
-
-message RoomLeave {
-  
-  string roomToken  = 1;
-
-}
-
-message RoomDestroy {
-  
-  string roomToken  = 1;
-
-}
-
-message RoomHalt {
-  
-  string roomToken  = 1;
-
-}
-
-
-message RoomGetDetails {
-  
-  string roomToken  = 1;
-  repeated string players = 2;
-
-}
-
-
-message RoomAddPlayer {
-  
-  string roomToken  = 1;
-  string playerId = 2;
-
-}
-
-message RoomKickPlayer {
-  
-  string roomToken  = 1;
-  string playerId = 2;
-
-}
-
-message RoomSendMessage {
-  string roomToken = 1;
-  string message  = 2;
-
-}
-
-message RoomGetPlayers {
-  string roomName = 1;
-}
-
-message PlayersInRoom {
-  repeated string players = 1;
-  string roomName = 2;
-}
-
-message GenericEvent {
-  string message = 1;
-
-}

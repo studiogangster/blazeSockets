@@ -1,0 +1,23 @@
+syntax = "proto3";
+package proxy.proto.models;
+
+enum GameResponseType {
+
+
+  CREATE_ROOM_RESPONSE = 0;
+  JOIN_ROOM_RESPONSE = 1;
+  LEAVE_ROOM_RESPONSE = 2;
+  DESTROY_ROOM_RESPONSE = 3;
+  HALT_ROOM_RESPONSE = 4;
+  GET_ROOMS_RESPONSE = 5;
+  GET_ROOM_DETAILS_RESPONSE = 6;
+  KICK_PLAYER_FROM_ROOM_RESPONSE = 7;
+  SEND_MESSAGE_RESPONSE = 8;
+  GET_STATUS_RESPONSE = 9;
+}
+
+message GameResponse {
+  GameResponseType gameResponseType = 1;
+  bool success = 2;
+  bytes messsage = 3;
+}

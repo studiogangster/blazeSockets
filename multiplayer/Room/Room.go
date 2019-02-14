@@ -31,6 +31,18 @@ func AddPlayerToRoom(roomName string, socketName string) bool{
 	return ok
 
 }
+func LeaveRoom(roomName string, socketName string) bool{
+	item, ok := memory.ROOMS.Get(roomName)
+
+	if ok {
+		item.(map[string]bool)[socketName] = false
+
+		//HandleMultiplayerEvents(socketModels.MultiplayerMessageType_ROOM_JOIN_EVENT, socketName, "Joined")
+	}
+
+	return ok
+
+}
 
 func GetRoomNames() []string {
 
