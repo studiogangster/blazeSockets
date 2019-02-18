@@ -9,7 +9,6 @@ import (
 	"os"
 	"time"
 
-	"gopkg.in/hraban/opus.v2"
 
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
@@ -23,7 +22,7 @@ func adio() {
 		log.Fatal(err)
 	}
 
-	// Output file.
+	// Output file.go
 	out, err := os.Create("output.wav")
 	if err != nil {
 		log.Fatal(err)
@@ -82,14 +81,7 @@ func WriteToFile(data []byte) {
 		panic(err)
 	}
 }
-func OpusTest(inp []byte) {
 
-	out := make([]int16, 2048)
-	decoder, _ := opus.NewDecoder(16000, 1)
-	dec, err := decoder.Decode(inp, out)
-
-	fmt.Println("Data", dec, err, len(inp))
-}
 
 func BroadcastToAll(conn *net.UDPConn, data []byte, sender string) {
 
@@ -97,10 +89,10 @@ func BroadcastToAll(conn *net.UDPConn, data []byte, sender string) {
 
 	for item := range UDPAddresses.IterBuffered() {
 		if item.Key == sender {
-			// continue
+			continue
 		}
 		if data[0] == 'A' {
-			OpusTest(data[3:])
+			//OpusTest(data[3:])
 			// timeBytes := data[len(data)-8:]
 			// fmt.Println("Latency", (time.Now().UnixNano() / int64(time.Millisecond)), makeTimestamp(timeBytes))
 
@@ -135,7 +127,7 @@ func UdpServer() {
 		_addr := fmt.Sprintf("%b", addr)
 		UDPAddresses.Set(_addr, addr)
 		fmt.Println("Received ", n, "bytes from ", addr)
-		BroadcastToAll(ServerConn, buf[0:n], _addr)
+		go BroadcastToAll(ServerConn, buf[0:n], _addr)
 	}
 
 }

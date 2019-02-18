@@ -1,8 +1,8 @@
 package main
 
 import (
-	"blazesockets/multiplayer/Server"
-	"blazesockets/multiplayer/Serverconfig"
+	server "blazesockets/multiplayer/Server"
+	serverconfig "blazesockets/multiplayer/Serverconfig"
 	voip "blazesockets/multiplayer/Voip"
 )
 
