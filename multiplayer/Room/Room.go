@@ -20,6 +20,15 @@ func CreateRoom(roomName string) {
 
 }
 
+func DeleteRoom(roomName string) {
+
+
+	memory.ROOMS.Remove(roomName)
+	// TOOD: Update REDIS about the create room
+	log.Println("Room Deleted ", roomName)
+
+}
+
 func AddPlayerToRoom(roomName string, socketName string) bool{
 	item, ok := memory.ROOMS.Get(roomName)
 

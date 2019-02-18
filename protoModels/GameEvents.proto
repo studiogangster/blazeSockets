@@ -24,7 +24,6 @@ enum GameEventType {
 
 message GameEvent {
   GameEventType gameEventType = 1;
-  bool success = 2;
   bytes messsage = 3;
 }
 

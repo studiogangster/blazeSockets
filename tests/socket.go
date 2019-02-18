@@ -21,6 +21,7 @@ var Inputs = map[string]string{
 	"3": "Get player in rooms",
 	"4": "Get list of rooms",
 	"5": "Send Message",
+	"7": "Destroy Room",
 }
 
 var Handlers = map[string]interface{}{
@@ -30,6 +31,7 @@ var Handlers = map[string]interface{}{
 	"3":  getPlayersInRoom,
 	"4":  getRooms,
 	"5":  sendMessage,
+	"7":  destroyRoom,
 
 }
 
@@ -80,6 +82,17 @@ func leaveRoom(){
 	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
 		GameRequestType: socketModels.GameRequestType_LEAVE_ROOM_REQUEST,
 		Messsage: []byte("I want to leave"),
+	} )
+
+	sent, err := conn.Write(message)
+	fmt.Println(sent, err)
+}
+func destroyRoom(){
+	roomName := input("Room name to destroy?\n")
+
+	message := messagecreator.CreateRequest(  &socketModels.GameRequest{
+		GameRequestType: socketModels.GameRequestType_DESTROY_ROOM_REQUEST,
+		Messsage: []byte(roomName),
 	} )
 
 	sent, err := conn.Write(message)

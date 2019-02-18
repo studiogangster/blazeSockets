@@ -415,15 +415,8 @@ func (channel *Channel) MessageParser(MessageType byte, message []byte) {
 	case 'S':
 		log.Println("Game Response", string(message))
 		channel.HandleResponse(message)
-
 		// Handle multiplayer Events
-		//log.Println("Multiplayer", string(message))
-		//msg := ParseMultiplayerModel(message)
-		//channel.HandleMultiplayerMessage(msg)
-		//fmt.Println("Multiplayer", string(message))
-		// data := new(socketModels.MultiplayerHandshake)
-		// proto.Unmarshal(message, data)
-		// fmt.Println(data)
+
 		break
 
 	default:
@@ -472,10 +465,33 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
 			GameEventType:proxy_proto_models.GameEventType_ROOM_LEFT_EVENT,
 			Messsage: message.Messsage,
-			Success:true,
 		} )
 
 		break
+
+	case proxy_proto_models.GameRequestType_DESTROY_ROOM_REQUEST:
+
+		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
+			GameEventType:proxy_proto_models.GameEventType_ROOM_DESTROYED_EVENT,
+			Messsage: []byte("ROOM IS BEING DESTROYED"),
+		} )
+		BroadcastInRoom( string(message.Messsage) , eventToBroadcast)
+
+		item, ok := memDb.ROOMS.Get(roomName)
+
+		if ok {
+
+			for  key := range  item.(map[string]bool) {
+				playerChannel, ok := memDb.SOCKETS.Get(key)
+				if ok{
+					playerChannel.(*Channel).RoomName = ""
+				}
+			}
+		}
+
+		Room.DeleteRoom(channel.RoomName )
+
+		return
 
 
 	case proxy_proto_models.GameRequestType_JOIN_ROOM_REQUEST:
@@ -485,7 +501,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
 			GameEventType:proxy_proto_models.GameEventType_ROOM_JOINED_EVENT,
 			Messsage: message.Messsage,
-			Success:true,
+
 		} )
 		break
 
@@ -504,7 +520,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
 			GameEventType:proxy_proto_models.GameEventType_GAME_MESSAGE_EVENT,
 			Messsage: message.Messsage,
-			Success:true,
+
 		} )
 
 		break
