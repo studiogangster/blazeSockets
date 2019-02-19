@@ -9,6 +9,8 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
+	"sync"
 	"time"
 
 	"github.com/go-audio/audio"
@@ -118,17 +120,51 @@ func makeTimestamp(timeInBytes []byte) int64 {
 	return timeInInt
 }
 
-func UdpServer() {
 
-	ServerConn, _ := net.ListenUDP("udp", &net.UDPAddr{IP: []byte{0, 0, 0, 0}, Port: 9876, Zone: ""})
-	defer ServerConn.Close()
+func DistributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *sync.WaitGroup){
 	buf := make([]byte, 1024)
+	log.Println("WorkerId", workerId)
 	for {
-		n, addr, _ := ServerConn.ReadFromUDP(buf)
+		n, addr, err := conn.ReadFromUDP(buf)
+
+		if err != nil{
+			fmt.Println("Error", err)
+
+		}
+
 		_addr := fmt.Sprintf("%b", addr)
 		UDPAddresses.Set(_addr, addr)
-		fmt.Println("Received ", n, "bytes from ", addr)
-		go BroadcastToAll(ServerConn, buf[0:n], _addr)
+		//fmt.Println("Received ", n, "bytes from ", addr)
+		go BroadcastToAll(conn, buf[0:n], _addr)
 	}
+
+	wg.Done()
+}
+
+func DistributeWork(   ){
+	var wg sync.WaitGroup
+	ServerConn, _ := net.ListenUDP("udp", &net.UDPAddr{IP: []byte{0, 0, 0, 0}, Port: 9876, Zone: ""})
+	defer  func()  {
+			fmt.Println("Closing Connection")
+			ServerConn.Close()
+		}()
+
+	WORKERS := 5
+	for i := 1; i <= WORKERS; i++ {
+		wg.Add(1)
+		go DistributedHandlingUdpConnection(  strconv.Itoa(i),  ServerConn , &wg )
+	}
+
+	wg.Wait()
+
+
+}
+
+func UdpServer() {
+
+
+	DistributeWork()
+
+
 
 }
