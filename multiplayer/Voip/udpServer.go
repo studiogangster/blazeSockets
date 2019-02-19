@@ -87,21 +87,36 @@ func WriteToFile(data []byte) {
 	}
 }
 
-func BroadcastToAll(conn *net.UDPConn, data []byte, sender string) {
+type BroadcastData struct {
+	Data []byte
+	Address *net.UDPAddr
+	}
 
 
-	for item := range UDPAddresses.IterBuffered() {
-		if item.Key == sender {
-			continue
-		}
+func BroadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId string  ) {
+
+	for {
+
+		Input := <-channel
+		sender :=  fmt.Sprintf("%b", Input.Address)
+		data := Input.Data
 		if data[0] == 'A' {
-			//OpusTest(data[3:])
-			// timeBytes := data[len(data)-8:]
-			// fmt.Println("Latency", (time.Now().UnixNano() / int64(time.Millisecond)), makeTimestamp(timeBytes))
+		for item := range UDPAddresses.IterBuffered() {
+			if item.Key == sender {
+				continue
+			}
 
-			conn.WriteToUDP(data, item.Val.(*net.UDPAddr))
+				//OpusTest(data[3:])
+				// timeBytes := data[len(data)-8:]
+				// fmt.Println("Latency", (time.Now().UnixNano() / int64(time.Millisecond)), makeTimestamp(timeBytes))
+				conn.WriteToUDP(data, item.Val.(*net.UDPAddr))
+				log.Println("Data ", "Sender" , Input.Address , "Reciever", item.Val )
 
+			}
+		} else {
+			UDPAddresses.Set(sender, Input.Address)
 		}
+
 	}
 
 }
@@ -122,26 +137,42 @@ func makeTimestamp(timeInBytes []byte) int64 {
 
 
 func DistributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *sync.WaitGroup){
+
+	BROADCASTER_WORKERS := 5
+	Channel := make(chan  BroadcastData , 50)
+
+	for i := 1; i <= BROADCASTER_WORKERS; i++ {
+		go BroadcastToAll( conn, Channel , strconv.Itoa(i)  )
+	}
+
+
 	buf := make([]byte, 1024)
 	log.Println("WorkerId", workerId)
+
+
+
 	for {
-		n, addr, err := conn.ReadFromUDP(buf)
-
-		if err != nil{
-			fmt.Println("Error", err)
-
+		n, addr, _ := conn.ReadFromUDP(buf)
+		//log.Println("Data from", addr, "WorkerID", workerId)
+		Channel <- BroadcastData{
+			 Data: buf[:n],
+			 Address: addr,
 		}
-
-		_addr := fmt.Sprintf("%b", addr)
-		UDPAddresses.Set(_addr, addr)
+		//if err != nil{
+		//	fmt.Println("Error", err)
+		//
+		//}
+		//
+		//_addr := fmt.Sprintf("%b", addr)
+		//UDPAddresses.Set(_addr, addr)
 		//fmt.Println("Received ", n, "bytes from ", addr)
-		go BroadcastToAll(conn, buf[0:n], _addr)
+		//BroadcastToAll(conn, buf[0:n], _addr)
 	}
 
 	wg.Done()
 }
 
-func DistributeWork(   ){
+func distributeWork(   ){
 	var wg sync.WaitGroup
 	ServerConn, _ := net.ListenUDP("udp", &net.UDPAddr{IP: []byte{0, 0, 0, 0}, Port: 9876, Zone: ""})
 	defer  func()  {
@@ -161,10 +192,5 @@ func DistributeWork(   ){
 }
 
 func UdpServer() {
-
-
-	DistributeWork()
-
-
-
+	distributeWork()
 }
