@@ -1,19 +1,22 @@
 package voip
 
 import (
+	"blazesockets/InMemoryDB"
 	"encoding/binary"
 	"fmt"
+	"github.com/orcaman/concurrent-map"
 	"io"
 	"log"
 	"net"
 	"os"
 	"time"
 
-
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
-	cMap "github.com/orcaman/concurrent-map"
 )
+
+var CHANNELS = cmap.New()
+
 
 func adio() {
 	// Read raw PCM data from input file.
@@ -66,7 +69,7 @@ func newAudioIntBuffer(r io.Reader) (*audio.IntBuffer, error) {
 	}
 }
 
-var UDPAddresses = cMap.New()
+var UDPAddresses = InMemoryDB.VOICECHATROOM
 
 func WriteToFile(data []byte) {
 	filename := "audio.pcm"
@@ -82,10 +85,8 @@ func WriteToFile(data []byte) {
 	}
 }
 
-
 func BroadcastToAll(conn *net.UDPConn, data []byte, sender string) {
 
-	fmt.Println("Broadcasting To", UDPAddresses.Count())
 
 	for item := range UDPAddresses.IterBuffered() {
 		if item.Key == sender {
