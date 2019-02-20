@@ -18,6 +18,17 @@ import (
 )
 
 var CHANNELS = cmap.New()
+var BROADCASTER_WORKERS = 5
+var WORKERS = 5
+
+
+//UDP_MESSAGE_TYPES
+const (
+	CONNECT = 'C'
+	PING = 'P'
+	AUDIO_DATA = 'A'
+
+)
 
 
 func adio() {
@@ -71,8 +82,6 @@ func newAudioIntBuffer(r io.Reader) (*audio.IntBuffer, error) {
 	}
 }
 
-var UDPAddresses = InMemoryDB.VOICECHATROOM
-
 func WriteToFile(data []byte) {
 	filename := "audio.pcm"
 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
@@ -93,29 +102,43 @@ type BroadcastData struct {
 	}
 
 
-func BroadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId string  ) {
+func broadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId string  ) {
 
 	for {
 
 		Input := <-channel
-		sender :=  fmt.Sprintf("%b", Input.Address)
+
 		data := *Input.Data
-		if data[0] == 'A' {
-		for item := range UDPAddresses.IterBuffered() {
-			if item.Key == sender {
-				continue
-			}
+		sender :=  string( data[9:13])
+		switch data[0] {
 
-				//OpusTest(data[3:])
-				// timeBytes := data[len(data)-8:]
-				// fmt.Println("Latency", (time.Now().UnixNano() / int64(time.Millisecond)), makeTimestamp(timeBytes))
-				conn.WriteToUDP(data, item.Val.(*net.UDPAddr))
-				log.Println("Data ", "Sender" , Input.Address , "Reciever", item.Val )
+		case CONNECT:
 
-			}
-		} else {
-			UDPAddresses.Set(sender, Input.Address)
+			InMemoryDB.VOICECHATROOM.Set(sender, Input.Address)
+
+			break
+		case AUDIO_DATA:
+
+				for item := range InMemoryDB.VOICECHATROOM.IterBuffered() {
+					if item.Key == sender {
+						continue
+					}
+					//OpusTest(data[3:])
+					// timeBytes := data[len(data)-8:]
+					// fmt.Println("Latency", (time.Now().UnixNano() / int64(time.Millisecond)), makeTimestamp(timeBytes))
+					conn.WriteToUDP(data, item.Val.(*net.UDPAddr))
+					//log.Println("Data ", "Sender" , Input.Address , "Reciever", item.Key , item.Val )
+				}
+
+			break
+
+		case PING:
+			log.Println("CLIENT_ID", string( data[9:13] ) )
+			InMemoryDB.VOICECHATROOM.Set(sender, Input.Address)
+			break
+
 		}
+
 
 	}
 
@@ -135,44 +158,32 @@ func makeTimestamp(timeInBytes []byte) int64 {
 	return timeInInt
 }
 
+func distributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *sync.WaitGroup){
 
-func DistributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *sync.WaitGroup){
-
-	BROADCASTER_WORKERS := 5
 	Channel := make(chan  BroadcastData , 50)
 
 	for i := 1; i <= BROADCASTER_WORKERS; i++ {
-		go BroadcastToAll( conn, Channel , strconv.Itoa(i)  )
+		go broadcastToAll( conn, Channel , strconv.Itoa(i)  )
 	}
 
 
 	buf := make([]byte, 1024)
 	log.Println("WorkerId", workerId)
 
-
-
 	for {
-		log.Println("Waiting for data")
+		//log.Println("Waiting for data")
 		n, addr, _ := conn.ReadFromUDP(buf)
-		tmp := make([]byte, n)
-		copy(tmp, buf)
-		//log.Println("Data from", addr, "WorkerID", workerId)
+		//log.Println("Read", n , addr , err)
+		filtereData := make([]byte, n)
+		copy(filtereData, buf)
 		Channel <- BroadcastData{
-			 Data: &tmp,
+			 Data: &filtereData,
 			 Address: addr,
 		}
-		//if err != nil{
-		//	fmt.Println("Error", err)
-		//
-		//}
-		//
-		//_addr := fmt.Sprintf("%b", addr)
-		//UDPAddresses.Set(_addr, addr)
-		//fmt.Println("Received ", n, "bytes from ", addr)
-		//BroadcastToAll(conn, buf[0:n], _addr)
-	}
 
-	wg.Done()
+	}
+	//Workers will never die
+	//wg.Done()
 }
 
 func distributeWork(   ){
@@ -183,16 +194,15 @@ func distributeWork(   ){
 			ServerConn.Close()
 		}()
 
-	WORKERS := 5
+
 	for i := 1; i <= WORKERS; i++ {
 		wg.Add(1)
-		go DistributedHandlingUdpConnection(  strconv.Itoa(i),  ServerConn , &wg )
+		go distributedHandlingUdpConnection(  strconv.Itoa(i),  ServerConn , &wg )
 	}
 
 	wg.Wait()
-
-
 }
+
 
 func UdpServer() {
 	distributeWork()

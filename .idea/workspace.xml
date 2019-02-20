@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0af9af4f-ecfa-4ce4-8027-0aeb9bb3f073" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/multiplayer/Voip/udpServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/multiplayer/Voip/udpServer.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,8 +37,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/multiplayer/Voip/udpServer.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
-              <caret line="162" column="9" lean-forward="true" selection-start-line="162" selection-start-column="9" selection-end-line="162" selection-end-column="9" />
+            <state relative-caret-position="257">
+              <caret line="130" column="17" lean-forward="true" selection-start-line="130" selection-start-column="17" selection-end-line="130" selection-end-column="17" />
+              <folding>
+                <element signature="n#!!block;n#adio#0" />
+                <element signature="n#!!block;n#newAudioIntBuffer#0" />
+                <element signature="n#!!block;n#WriteToFile#0" />
+                <element signature="n#!!block;n#getTimestamp#0" />
+                <element signature="n#!!block;n#makeTimestamp#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -55,14 +61,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>create</find>
-      <find>roomtoken</find>
-      <find>sessionke</find>
-      <find>token</find>
-      <find>room2</find>
-      <find>join</find>
-      <find>GenericEvent</find>
-      <find>HandleMultiplayerMessage</find>
       <find>joinro</find>
       <find>joinroo</find>
       <find>createev</find>
@@ -85,6 +83,14 @@
       <find>struc</find>
       <find>BroadcastData</find>
       <find>UDPAddresses</find>
+      <find>workers</find>
+      <find>broadcastToAll</find>
+      <find>'a'</find>
+      <find>conn.</find>
+      <find>.set</find>
+      <find>VOICECHATROOM</find>
+      <find>sender</find>
+      <find>CLIENT_ID</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.11.5/libexec" />
@@ -402,13 +408,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/vendor/github.com/golang/protobuf/proto/decode.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="334" column="5" selection-start-line="334" selection-start-column="5" selection-end-line="334" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/InMemoryDB/Room.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -684,10 +683,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/Cellar/go/1.10.3/libexec/src/builtin/builtin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="96" column="6" selection-start-line="96" selection-start-column="6" selection-end-line="96" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/multiplayer/Voip/udpServer.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="162" column="9" lean-forward="true" selection-start-line="162" selection-start-column="9" selection-end-line="162" selection-end-column="9" />
+        <state relative-caret-position="257">
+          <caret line="130" column="17" lean-forward="true" selection-start-line="130" selection-start-column="17" selection-end-line="130" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!block;n#adio#0" />
+            <element signature="n#!!block;n#newAudioIntBuffer#0" />
+            <element signature="n#!!block;n#WriteToFile#0" />
+            <element signature="n#!!block;n#getTimestamp#0" />
+            <element signature="n#!!block;n#makeTimestamp#0" />
+          </folding>
         </state>
       </provider>
     </entry>
