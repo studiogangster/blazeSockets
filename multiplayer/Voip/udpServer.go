@@ -88,7 +88,7 @@ func WriteToFile(data []byte) {
 }
 
 type BroadcastData struct {
-	Data []byte
+	Data *[]byte
 	Address *net.UDPAddr
 	}
 
@@ -99,7 +99,7 @@ func BroadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId
 
 		Input := <-channel
 		sender :=  fmt.Sprintf("%b", Input.Address)
-		data := Input.Data
+		data := *Input.Data
 		if data[0] == 'A' {
 		for item := range UDPAddresses.IterBuffered() {
 			if item.Key == sender {
@@ -152,10 +152,13 @@ func DistributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *s
 
 
 	for {
+		log.Println("Waiting for data")
 		n, addr, _ := conn.ReadFromUDP(buf)
+		tmp := make([]byte, n)
+		copy(tmp, buf)
 		//log.Println("Data from", addr, "WorkerID", workerId)
 		Channel <- BroadcastData{
-			 Data: buf[:n],
+			 Data: &tmp,
 			 Address: addr,
 		}
 		//if err != nil{
