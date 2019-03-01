@@ -3,13 +3,12 @@ package Room
 import (
 	memory "blazesockets/InMemoryDB"
 	"log"
+	"blazesockets/multiplayer/GameEngines/core"
 )
 
 
 
-
-
-func CreateRoom(roomName string) {
+func CreateRoom(roomName string) (*gameengine.GameEngine) {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
 	room := make(map[string]bool)
@@ -17,6 +16,11 @@ func CreateRoom(roomName string) {
 	memory.ROOMS.SetIfAbsent(roomName, room)
 	// TOOD: Update REDIS about the create room
 	log.Println("Room Created ", roomName)
+	//ADDRESS WILL BE RECIEVED FROM API, CURRENTLY HARDCODED
+	return gameengine.CreateGameEngine(roomName, "localhost:7071")
+
+
+
 
 }
 

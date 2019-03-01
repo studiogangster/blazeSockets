@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mediocregopher/radix.v2/sentinel"
+	"github.com/mediocregopher/radix.v3/sentinel"
 )
 
 type RedisClient struct {

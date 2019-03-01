@@ -18,8 +18,8 @@ import (
 )
 
 var CHANNELS = cmap.New()
-var BROADCASTER_WORKERS = 5
-var WORKERS = 5
+var BROADCASTER_WORKERS = 20
+var WORKERS = 10
 
 
 //UDP_MESSAGE_TYPES
@@ -118,7 +118,6 @@ func broadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId
 
 			break
 		case AUDIO_DATA:
-
 				for item := range InMemoryDB.VOICECHATROOM.IterBuffered() {
 					if item.Key == sender {
 						continue
@@ -126,7 +125,7 @@ func broadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId
 					//OpusTest(data[3:])
 					// timeBytes := data[len(data)-8:]
 					// fmt.Println("Latency", (time.Now().UnixNano() / int64(time.Millisecond)), makeTimestamp(timeBytes))
-					conn.WriteToUDP(data, item.Val.(*net.UDPAddr))
+					go conn.WriteToUDP(data, item.Val.(*net.UDPAddr))
 					//log.Println("Data ", "Sender" , Input.Address , "Reciever", item.Key , item.Val )
 				}
 
@@ -160,7 +159,7 @@ func makeTimestamp(timeInBytes []byte) int64 {
 
 func distributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *sync.WaitGroup){
 
-	Channel := make(chan  BroadcastData , 50)
+	Channel := make(chan  BroadcastData , 10)
 
 	for i := 1; i <= BROADCASTER_WORKERS; i++ {
 		go broadcastToAll( conn, Channel , strconv.Itoa(i)  )

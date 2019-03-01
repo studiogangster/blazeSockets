@@ -3,121 +3,141 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:42b801064f0aeb1b9bad0e1b42edf27bc34485bec63b965b9b840e07e6074608"
+  name = "github.com/gin-contrib/sse"
+  packages = ["."]
+  revision = "996076df5b3348fd04ff02aa5f9abd971c2d2d28"
+
+[[projects]]
+  name = "github.com/gin-gonic/gin"
+  packages = [
+    ".",
+    "binding",
+    "json",
+    "render"
+  ]
+  revision = "b869fe1415e4b9eb52f247441830d502aece2d4d"
+  version = "v1.3.0"
+
+[[projects]]
+  branch = "master"
   name = "github.com/go-audio/audio"
   packages = ["."]
-  pruneopts = "UT"
   revision = "7b2a6ca214808c64326280ac13268af853543f0b"
 
 [[projects]]
   branch = "master"
-  digest = "1:d8265bd12a9b80cff23bb0b225318230765a7220500a006392c53a6dc05b1367"
   name = "github.com/go-audio/wav"
   packages = ["."]
-  pruneopts = "UT"
   revision = "de841e69b8842aa73e98054d37feb48425f133b8"
 
 [[projects]]
   branch = "master"
-  digest = "1:368ba96ddacaae2fe265afcac3062a199908f7dc0c6569d6e05a7a13042cccf1"
   name = "github.com/gobwas/httphead"
   packages = ["."]
-  pruneopts = "UT"
   revision = "2c6c146eadee0b69f856f87e3e9f1d0cd6aad2f5"
 
 [[projects]]
-  digest = "1:009beeaff80655eb8f0c95bf4d99f862531c28346349fbf66c34e032fc6120da"
   name = "github.com/gobwas/pool"
   packages = [
     ".",
     "internal/pmath",
-    "pbufio",
+    "pbufio"
   ]
-  pruneopts = "UT"
   revision = "fa3125c39d7eca32e1387bb69b1b38dcb31b1e0b"
   version = "v0.2.0"
 
 [[projects]]
-  digest = "1:b8b4a0e0258e0b6e4547ae4d5167e0a510bce8592849f346c33270566e00fecb"
   name = "github.com/gobwas/ws"
   packages = ["."]
-  pruneopts = "UT"
   revision = "b93773f50025fc1c14bbd7e97a3b170aae9a0977"
   version = "v0.1.0"
 
 [[projects]]
-  digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  pruneopts = "UT"
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
   version = "v1.2.0"
 
 [[projects]]
+  name = "github.com/json-iterator/go"
+  packages = ["."]
+  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
+  version = "v1.1.5"
+
+[[projects]]
   branch = "master"
-  digest = "1:284fe30c02c3740eae902d4b073cfa2a3bc8d0508be260b3a613f5d897caecfe"
   name = "github.com/mailru/easygo"
   packages = ["netpoll"]
-  pruneopts = "UT"
   revision = "0c8322a753d040315fe938f6d1307cdebbe395c8"
 
 [[projects]]
   branch = "master"
-  digest = "1:8c2ec3f7fa853d374b340831554f225ead9ab4cc6932256f0cffbfef8c78d9f5"
   name = "github.com/mattetti/audio"
   packages = ["riff"]
-  pruneopts = "UT"
   revision = "01576cde1f212c296c0b8ef5fa857169770c75b6"
 
 [[projects]]
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  revision = "369ecd8cea9851e459abb67eb171853e3986591e"
+  version = "v0.0.6"
+
+[[projects]]
   branch = "master"
-  digest = "1:73172377dc00a09841691ebb1eae40adf40ee4e87880aca35084c3acd17bc1d5"
   name = "github.com/mediocregopher/radix.v2"
   packages = [
     "pool",
     "pubsub",
     "redis",
-    "sentinel",
+    "sentinel"
   ]
-  pruneopts = "UT"
   revision = "b67df6e626f993b64b3ca9f4b8630900e61002e3"
 
 [[projects]]
+  name = "github.com/modern-go/concurrent"
+  packages = ["."]
+  revision = "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+  version = "1.0.3"
+
+[[projects]]
+  name = "github.com/modern-go/reflect2"
+  packages = ["."]
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
+
+[[projects]]
   branch = "master"
-  digest = "1:f7aa53146bf79462509d4ce136826ebbd64907e4679e1b04e62758da6b68e589"
   name = "github.com/orcaman/concurrent-map"
   packages = ["."]
-  pruneopts = "UT"
   revision = "b28018939af9022337862b94a463abb18abb3e0e"
 
 [[projects]]
+  name = "github.com/ugorji/go"
+  packages = ["codec"]
+  revision = "8fd0f8d918c8f0b52d0af210a812ba882cc31a1e"
+  version = "v1.1.2"
+
+[[projects]]
   branch = "master"
-  digest = "1:dbe2ad3afac439a4bfd3e1b0352c4869dc26aae52662dcab72355408776ed5d5"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  pruneopts = "UT"
   revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
 
 [[projects]]
-  branch = "v2"
-  digest = "1:92ac5796b86f454e9b8a9f0f2ceba033747aa8d8fe1fda89b9ec6d6176a431b6"
-  name = "gopkg.in/hraban/opus.v2"
+  name = "gopkg.in/go-playground/validator.v8"
   packages = ["."]
-  pruneopts = "UT"
-  revision = "0f2e0b4fc6cd5710fddbb74ba2e5e02c1c1bc22b"
+  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
+  version = "v8.18.2"
+
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = [
-    "github.com/go-audio/audio",
-    "github.com/go-audio/wav",
-    "github.com/gobwas/ws",
-    "github.com/golang/protobuf/proto",
-    "github.com/mailru/easygo/netpoll",
-    "github.com/mediocregopher/radix.v2/sentinel",
-    "github.com/orcaman/concurrent-map",
-    "gopkg.in/hraban/opus.v2",
-  ]
+  inputs-digest = "82631ccffda0b8911bad254cc637ddd31e31d3fe69feeef202a9bda75924ea68"
   solver-name = "gps-cdcl"
   solver-version = 1

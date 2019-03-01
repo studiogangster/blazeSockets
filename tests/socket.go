@@ -98,6 +98,7 @@ func destroyRoom(){
 	sent, err := conn.Write(message)
 	fmt.Println(sent, err)
 }
+
 func getRooms(){
 
 

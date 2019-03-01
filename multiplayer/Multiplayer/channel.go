@@ -18,6 +18,7 @@ import (
 
 	"github.com/gobwas/ws"
 	"github.com/mailru/easygo/netpoll"
+	"blazesockets/multiplayer/GameEngines/core"
 )
 
 // Multiplayer is a wrapper around websocket, that encapsulates a mutex(for locking), socketName, underlying connection, and fildescriptor associated with the socket.
@@ -39,6 +40,7 @@ type Channel struct {
 func (channel *Channel) close() {
 	fmt.Println("CLosing Socket")
 	memDb.SOCKETS.Remove(channel.SocketName)
+	Room.LeaveRoom( channel.RoomName , channel.SocketName )
 	// Not interested in any event from this socket, Remove from netpoll/epoll/kqueue
 	memDb.Poller.Stop(channel.FileDescriptor)
 	// Close the socket connection
@@ -383,7 +385,15 @@ func (channel *Channel)  extractBufferFromMessageData(){
 	}
 }
 
+func OnMessageFromGameEngine( roomName string,  message []byte) {
 
+	message = messagecreator.CreateResponse(&proxy_proto_models.GameResponse{
+		Messsage: message,
+		GameResponseType:proxy_proto_models.GameResponseType_SEND_MESSAGE_RESPONSE,
+	} )
+	BroadcastInRoom(roomName, message)
+
+}
 
 // The place to parse the message recieved from the client
 func (channel *Channel) MessageParser(MessageType byte, message []byte) {
@@ -413,7 +423,6 @@ func (channel *Channel) MessageParser(MessageType byte, message []byte) {
 		break
 
 	case 'S':
-		log.Println("Game Response", string(message))
 		channel.HandleResponse(message)
 		// Handle multiplayer Events
 
@@ -441,7 +450,12 @@ func (channel *Channel) HandleRequest(msg []byte) {
 
 
 	case proxy_proto_models.GameRequestType_CREATE_ROOM_REQUEST:
-		Room.CreateRoom(string(message.Messsage))
+		gameEngine := Room.CreateRoom(string(message.Messsage))
+
+		//Assingn Callback
+		(*gameEngine).OnMessage = func(message []byte) {
+			OnMessageFromGameEngine( channel.RoomName,   message)
+		}
 
 		channel.Send( messagecreator.CreateEvent(&proxy_proto_models.GameEvent{
 			Messsage: message.Messsage,
@@ -515,6 +529,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		} ) )
 
 		break
+
 	case proxy_proto_models.GameRequestType_SEND_MESSAGE_REQUEST:
 
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
@@ -522,6 +537,8 @@ func (channel *Channel) HandleRequest(msg []byte) {
 			Messsage: message.Messsage,
 
 		} )
+
+		gameengine.SendMessageToGameEngine(channel.RoomName , eventToBroadcast)
 
 		break
 
