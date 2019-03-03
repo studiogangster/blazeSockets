@@ -12,7 +12,7 @@ import (
 
 var PING_INTERVAL = 1 * time.Second
 var READ_TIMEOUT = 3 * time.Second
-var MAX_RETRY_COUNT = 5
+var MAX_RETRY_COUNT = 10
 
 type GameEngine struct {
 	Connection *net.Conn
@@ -33,7 +33,7 @@ func  (it *GameEngine) SendData(message []byte) {
 }
 
 //TODO CHeck thread safety
-func  (it *GameEngine) Connect(){
+func  (it *GameEngine) Connect(reconnecting bool){
 
 
 	if MAX_RETRY_COUNT <= it.retryCount{
@@ -51,18 +51,24 @@ func  (it *GameEngine) Connect(){
 		it.IsLive = false
 		log.Println("SERVER NOT AVAILBLE ")
 		log.Println("RECONNECTING")
-		time.Sleep(it.PingInterval)
-		it.Connect()
+		time.Sleep(PING_INTERVAL)
+		it.Connect(true)
 		return
 	}
+
+	log.Println("Connected to GameServer")
 
 	it.IsLive = true
 	//SERVER CONNECTED
 	it.retryCount=0
 
-	it.OnMessage = func(message []byte) {
-		//channel.BroadcastInRoom( it.RoomName, message )
+	if !reconnecting{
+		it.OnMessage = func(message []byte) {
+			//channel.BroadcastInRoom( it.RoomName, message )
+		}
 	}
+
+
 
 	it.Connection = &conn
 	InMemoryDB.GAMESERVER.SetIfAbsent( it.RoomName , it )
@@ -78,7 +84,7 @@ func  (it *GameEngine) Connect(){
 				log.Println("READ TIMEOUT OCCURED ")
 				log.Println("RECONNECTING")
 				(*it.Connection).Close()
-				it.Connect()
+				it.Connect(true)
 				break
 
 			} else {
@@ -102,15 +108,27 @@ func  (it *GameEngine) Connect(){
 
 }
 
+func GetGameEngine(roomName string, address string ) *GameEngine {
+
+	gameServer , exists :=InMemoryDB.GAMESERVER.Get(roomName)
+	if exists{
+		return  gameServer.(*GameEngine)
+	} else {
+		return CreateGameEngine(roomName , address)
+	}
+
+}
+
 func CreateGameEngine(roomName string, address string ) *GameEngine {
 
 	gameEngine := &GameEngine{
 		GameEngineAddress: address,
 		RoomName:roomName,
+
 	}
 
 
-	gameEngine.Connect()
+	gameEngine.Connect(false)
 	return gameEngine
 
 

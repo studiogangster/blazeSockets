@@ -17,7 +17,7 @@ func CreateRoom(roomName string) (*gameengine.GameEngine) {
 	// TOOD: Update REDIS about the create room
 	log.Println("Room Created ", roomName)
 	//ADDRESS WILL BE RECIEVED FROM API, CURRENTLY HARDCODED
-	return gameengine.CreateGameEngine(roomName, "localhost:7071")
+	return gameengine.GetGameEngine(roomName, "localhost:7071")
 
 
 

@@ -38,7 +38,7 @@ func HandleMessage(data []byte, channel *channel.Channel) {
 }
 
 // PingBraodcastIteration Methods
-func (pingStruct PingBraodcastIteration) broadcastPing() {
+func (pingStruct PingBraodcastIteration) BroadcastPing() {
 	pingStruct.isRunning = true
 	pingFrame := ws.NewPingFrame(nil)
 	pingStruct.Lock()
@@ -51,7 +51,7 @@ func (pingStruct PingBraodcastIteration) broadcastPing() {
 	}
 	pingStruct.Unlock()
 	pingFrame = ws.Frame{}
-	pingStruct.broadcastPing()
+	pingStruct.BroadcastPing()
 }
 
 var rLocks int64
@@ -179,11 +179,12 @@ func CreateChannel(conn *net.Conn, sessionKey string) {
 
 func BroadCastSync(data []byte) {
 
-	for item := range memDb.SOCKETS.Iter() {
+	for item := range memDb.SOCKETS.IterBuffered() {
 
-		channel, ok := item.Val.(*channel.Channel)
+		Channel, ok := item.Val.(*channel.Channel)
 		if ok {
-			channel.Conn.Write(data)
+			log.Println("SENDING" , item.Key, string(data))
+			Channel.Conn.Write(data)
 		} else {
 		}
 	}

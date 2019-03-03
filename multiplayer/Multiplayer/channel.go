@@ -444,7 +444,10 @@ func (channel *Channel) HandleRequest(msg []byte) {
 
 	var eventToBroadcast []byte = nil
 
+
+
 	roomName := channel.RoomName
+	log.Println("OldRoomName" , channel.SocketName, roomName)
 
 	switch message.GameRequestType {
 
@@ -478,7 +481,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
 			GameEventType:proxy_proto_models.GameEventType_ROOM_LEFT_EVENT,
-			Messsage: message.Messsage,
+			Messsage:  []byte(channel.SocketName + " just Left") ,
 		} )
 
 		break
@@ -511,10 +514,11 @@ func (channel *Channel) HandleRequest(msg []byte) {
 	case proxy_proto_models.GameRequestType_JOIN_ROOM_REQUEST:
 		Room.AddPlayerToRoom( string(message.Messsage) , channel.SocketName)
 		channel.RoomName = string(message.Messsage)
+		roomName = channel.RoomName
 
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
 			GameEventType:proxy_proto_models.GameEventType_ROOM_JOINED_EVENT,
-			Messsage: message.Messsage,
+			Messsage: []byte(channel.SocketName + " just joined") ,
 
 		} )
 		break
@@ -549,6 +553,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		BroadcastInRoom(roomName , eventToBroadcast)
 	}
 
+	log.Println("NewRoomName" , channel.SocketName, roomName)
 	log.Println("Handling Request from", channel.SocketName, "for room",  channel.RoomName)
 }
 
