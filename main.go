@@ -9,6 +9,8 @@ import (
 	"blazesockets/multiplayer/Utils"
 	"blazesockets/MessageCreator"
 	"blazesockets/protoModels/models"
+	"blazesockets/blazeconfig"
+	"blazesockets/servicediscovery"
 )
 
 func PingPong(){
@@ -27,10 +29,12 @@ func PingPong(){
 
 func main() {
 
+	go servicediscovery.StartApiServer()
+
 	go voip.UdpServer() // Start Audio Streaming Server
 
 	configuration := &(serverconfig.ServerConfig{
-		PORT:       "8080",
+		PORT:       blazeconfig.TCP_SOCKET_PORT,
 		EnableLogs: true,
 	})
 

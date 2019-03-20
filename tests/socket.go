@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	socketModels "blazesockets/protoModels/models"
+	"log"
 )
 
 var conn net.Conn
@@ -183,6 +184,12 @@ func connectToGameServer(pName string) {
 
 func main() {
 
+	log.Println( messagecreator.CreateEvent(&socketModels.GameEvent{
+		GameEventType:socketModels.GameEventType_GAME_MESSAGE_EVENT,
+		Name:"DUMMY",
+		Messsage:[]byte("TESTIN"),
+	}  ) )
+	return
 	Setup()
 	//connectToGameServer()
 	//go createRoom()

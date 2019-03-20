@@ -17,13 +17,14 @@ enum GameEventType {
   GAME_FINISHED_EVENT = 9;
   GAME_STOPPED_EVENT = 10;
   GAME_MESSAGE_EVENT = 11;
-
-
+  SOCKET_SERVER_PING = 12;
+  SOCKET_SERVER_PONG = 13;
 
 }
 
 message GameEvent {
   GameEventType gameEventType = 1;
   bytes messsage = 3;
+  string name = 4;
 }
 

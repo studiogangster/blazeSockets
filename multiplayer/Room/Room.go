@@ -4,20 +4,22 @@ import (
 	memory "blazesockets/InMemoryDB"
 	"log"
 	"blazesockets/multiplayer/GameEngines/core"
+	"fmt"
+	"strconv"
 )
 
 
 
-func CreateRoom(roomName string) (*gameengine.GameEngine) {
+func CreateRoom(roomName string, hostname string, port int, protocol string) (*gameengine.GameEngine) {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
 	room := make(map[string]bool)
 	// room := cMap.New()
 	memory.ROOMS.SetIfAbsent(roomName, room)
 	// TOOD: Update REDIS about the create room
-	log.Println("Room Created ", roomName)
+	fmt.Println("Room Created ", roomName)
 	//ADDRESS WILL BE RECIEVED FROM API, CURRENTLY HARDCODED
-	return gameengine.GetGameEngine(roomName, "localhost:7071")
+	return gameengine.GetGameEngine(roomName, hostname + ":"+ strconv.Itoa(port) )
 
 
 
@@ -61,13 +63,18 @@ func GetRoomNames() []string {
 
 	// TODO: DECIDE TO USE CONCIURRENT HASHMAPS OR NOT
 	// room := cMap.New()
-	roomNames := make([]string , memory.ROOMS.Count())
 
-	for item := range memory.ROOMS.IterBuffered() {
-		roomNames = append(roomNames ,  item.Key)
-	}
-	// TOOD: Update REDIS about the create room
-	return roomNames
+	return  memory.ROOMS.Keys()
+	//
+	//roomNames := make([]string , memory.ROOMS.Count())
+	//
+	//for item := range memory.ROOMS.IterBuffered() {
+	//	roomNames = append(roomNames ,  item.Key)
+	//	fmt.Println("Room List" , roomNames)
+	//}
+	//
+	//// TOOD: Update REDIS about the create room
+	//return roomNames
 
 }
 
@@ -83,10 +90,14 @@ func GetPlayersInRoom(roomName string) []string {
 	var roomNames []string
 
 	if ok{
-		roomNames := make([]string , len(item.(map[string]bool ) ) )
+		roomNames = make([]string , len(item.(map[string]bool ) ) )
+
 		for  key := range  item.(map[string]bool) {
+
 			roomNames = append(roomNames ,  key)
 		}
+	} else {
+		roomNames = []string{}
 	}
 	// TOOD: Update REDIS about the create room
 	return roomNames

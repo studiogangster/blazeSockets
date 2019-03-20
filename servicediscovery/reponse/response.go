@@ -1,4 +1,7 @@
-package request
+package response
+
+import "time"
+
 
 type Room struct {
 	Gid       int    `json:"gid"`
@@ -34,6 +37,13 @@ type Audio struct {
 type RoomInfo struct {
 
 	RoomName string `json:"roomId"`
+	IsLive bool `json:"isLive"`
+	PingInterval time.Duration `json:"pingInterval"`
+	GameEngineAddress string `json:"address"`
+	retryCount int `json:"retryCount"`
+	State string `json:"ss"`
+	GameServerSocketState string `json:"gs"`
+	Status bool `json:"status"`
 
 }
 

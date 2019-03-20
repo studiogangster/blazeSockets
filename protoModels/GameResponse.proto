@@ -3,7 +3,6 @@ package proxy.proto.models;
 
 enum GameResponseType {
 
-
   CREATE_ROOM_RESPONSE = 0;
   JOIN_ROOM_RESPONSE = 1;
   LEAVE_ROOM_RESPONSE = 2;
@@ -14,10 +13,12 @@ enum GameResponseType {
   KICK_PLAYER_FROM_ROOM_RESPONSE = 7;
   SEND_MESSAGE_RESPONSE = 8;
   GET_STATUS_RESPONSE = 9;
+
 }
 
 message GameResponse {
   GameResponseType gameResponseType = 1;
   bool success = 2;
   bytes messsage = 3;
+  string name = 4;
 }

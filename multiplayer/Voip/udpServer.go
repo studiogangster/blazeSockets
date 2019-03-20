@@ -97,7 +97,7 @@ func WriteToFile(data []byte) {
 }
 
 type BroadcastData struct {
-	Data *[]byte
+	Data []byte
 	Address *net.UDPAddr
 	}
 
@@ -108,8 +108,9 @@ func broadcastToAll( conn *net.UDPConn , channel <-chan BroadcastData , workerId
 
 		Input := <-channel
 
-		data := *Input.Data
+		data := Input.Data
 		sender :=  string( data[9:13])
+		//log.Println("Data" , data, "Sendwer", sender)
 		switch data[0] {
 
 		case CONNECT:
@@ -176,7 +177,7 @@ func distributedHandlingUdpConnection(workerId string, conn *net.UDPConn , wg *s
 		filtereData := make([]byte, n)
 		copy(filtereData, buf)
 		Channel <- BroadcastData{
-			 Data: &filtereData,
+			 Data: filtereData,
 			 Address: addr,
 		}
 

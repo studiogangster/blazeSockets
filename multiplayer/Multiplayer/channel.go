@@ -387,11 +387,62 @@ func (channel *Channel)  extractBufferFromMessageData(){
 
 func OnMessageFromGameEngine( roomName string,  message []byte) {
 
-	message = messagecreator.CreateResponse(&proxy_proto_models.GameResponse{
-		Messsage: message,
-		GameResponseType:proxy_proto_models.GameResponseType_SEND_MESSAGE_RESPONSE,
-	} )
-	BroadcastInRoom(roomName, message)
+
+
+	messageType := message[0]
+	messageLength :=int(binary.LittleEndian.Uint16( message[1:3]))
+
+
+	switch messageType {
+
+	case 'E' :
+
+		GotEvent := new(proxy_proto_models.GameEvent)
+		err := proto.Unmarshal(message[3:messageLength+3], GotEvent)
+		if err != nil {
+			log.Println("GameEngine", "Event", "Invalid")
+
+		} else {
+			log.Println("GameEngine", "Event", "Valid",GotEvent.GameEventType)
+
+			switch GotEvent.GameEventType {
+
+			case proxy_proto_models.GameEventType_GAME_MESSAGE_EVENT:
+
+				message = messagecreator.CreateResponse(&proxy_proto_models.GameResponse{
+					Messsage: GotEvent.Messsage,
+					GameResponseType:proxy_proto_models.GameResponseType_SEND_MESSAGE_RESPONSE,
+				} )
+
+				BroadcastInRoom(roomName, message)
+
+				break
+
+
+			}
+
+		}
+
+
+
+		break
+
+	case 'R':
+		log.Println("GameEngine", "Response", messageLength)
+		break
+
+	case 'C':
+		log.Println("GameEngine", "Request", messageLength)
+		break
+	default:
+		log.Println("GameEngine", "Unknown", messageLength)
+		break
+
+	}
+	
+
+
+
 
 }
 
@@ -453,7 +504,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 
 
 	case proxy_proto_models.GameRequestType_CREATE_ROOM_REQUEST:
-		gameEngine := Room.CreateRoom(string(message.Messsage))
+		gameEngine := Room.CreateRoom(string(message.Messsage), "localhost", 7071 , "tcp")
 
 		//Assingn Callback
 		(*gameEngine).OnMessage = func(message []byte) {
@@ -477,6 +528,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 			Messsage: []byte("You Left"),
 			Success: true,
 			GameResponseType:proxy_proto_models.GameResponseType_LEAVE_ROOM_RESPONSE,
+			Name: channel.SocketName,
 		} ) )
 
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
@@ -516,9 +568,16 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		channel.RoomName = string(message.Messsage)
 		roomName = channel.RoomName
 
+		channel.Send( messagecreator.CreateResponse(&proxy_proto_models.GameResponse{
+			Messsage: nil,
+			GameResponseType:proxy_proto_models.GameResponseType_GET_ROOMS_RESPONSE,
+			Name: channel.SocketName,
+		} ) )
+
 		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
 			GameEventType:proxy_proto_models.GameEventType_ROOM_JOINED_EVENT,
 			Messsage: []byte(channel.SocketName + " just joined") ,
+			Name: channel.SocketName,
 
 		} )
 		break
@@ -535,14 +594,15 @@ func (channel *Channel) HandleRequest(msg []byte) {
 		break
 
 	case proxy_proto_models.GameRequestType_SEND_MESSAGE_REQUEST:
+		//
+		//eventToBroadcast =
 
-		eventToBroadcast = messagecreator.CreateEvent(  &proxy_proto_models.GameEvent{
-			GameEventType:proxy_proto_models.GameEventType_GAME_MESSAGE_EVENT,
+		gameengine.SendMessageToGameEngine(channel.RoomName , messagecreator.CreateRequest(  &proxy_proto_models.GameRequest{
+			GameRequestType:proxy_proto_models.GameRequestType_SEND_MESSAGE_REQUEST,
 			Messsage: message.Messsage,
+			Name: channel.SocketName,
 
-		} )
-
-		gameengine.SendMessageToGameEngine(channel.RoomName , eventToBroadcast)
+		} ))
 
 		break
 
@@ -551,6 +611,7 @@ func (channel *Channel) HandleRequest(msg []byte) {
 	}
 	if eventToBroadcast != nil{
 		BroadcastInRoom(roomName , eventToBroadcast)
+		gameengine.SendMessageToGameEngine(channel.RoomName , eventToBroadcast)
 	}
 
 	log.Println("NewRoomName" , channel.SocketName, roomName)

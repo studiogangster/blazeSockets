@@ -24,21 +24,21 @@ namespace Proxy.Proto.Models {
     static GameResponseReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJHYW1lUmVzcG9uc2UucHJvdG8SEnByb3h5LnByb3RvLm1vZGVscyJxCgxH",
+            "ChJHYW1lUmVzcG9uc2UucHJvdG8SEnByb3h5LnByb3RvLm1vZGVscyJ/CgxH",
             "YW1lUmVzcG9uc2USPgoQZ2FtZVJlc3BvbnNlVHlwZRgBIAEoDjIkLnByb3h5",
             "LnByb3RvLm1vZGVscy5HYW1lUmVzcG9uc2VUeXBlEg8KB3N1Y2Nlc3MYAiAB",
-            "KAgSEAoIbWVzc3NhZ2UYAyABKAwqnwIKEEdhbWVSZXNwb25zZVR5cGUSGAoU",
-            "Q1JFQVRFX1JPT01fUkVTUE9OU0UQABIWChJKT0lOX1JPT01fUkVTUE9OU0UQ",
-            "ARIXChNMRUFWRV9ST09NX1JFU1BPTlNFEAISGQoVREVTVFJPWV9ST09NX1JF",
-            "U1BPTlNFEAMSFgoSSEFMVF9ST09NX1JFU1BPTlNFEAQSFgoSR0VUX1JPT01T",
-            "X1JFU1BPTlNFEAUSHQoZR0VUX1JPT01fREVUQUlMU19SRVNQT05TRRAGEiIK",
-            "HktJQ0tfUExBWUVSX0ZST01fUk9PTV9SRVNQT05TRRAHEhkKFVNFTkRfTUVT",
-            "U0FHRV9SRVNQT05TRRAIEhcKE0dFVF9TVEFUVVNfUkVTUE9OU0UQCWIGcHJv",
-            "dG8z"));
+            "KAgSEAoIbWVzc3NhZ2UYAyABKAwSDAoEbmFtZRgEIAEoCSqfAgoQR2FtZVJl",
+            "c3BvbnNlVHlwZRIYChRDUkVBVEVfUk9PTV9SRVNQT05TRRAAEhYKEkpPSU5f",
+            "Uk9PTV9SRVNQT05TRRABEhcKE0xFQVZFX1JPT01fUkVTUE9OU0UQAhIZChVE",
+            "RVNUUk9ZX1JPT01fUkVTUE9OU0UQAxIWChJIQUxUX1JPT01fUkVTUE9OU0UQ",
+            "BBIWChJHRVRfUk9PTVNfUkVTUE9OU0UQBRIdChlHRVRfUk9PTV9ERVRBSUxT",
+            "X1JFU1BPTlNFEAYSIgoeS0lDS19QTEFZRVJfRlJPTV9ST09NX1JFU1BPTlNF",
+            "EAcSGQoVU0VORF9NRVNTQUdFX1JFU1BPTlNFEAgSFwoTR0VUX1NUQVRVU19S",
+            "RVNQT05TRRAJYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Proxy.Proto.Models.GameResponseType), }, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Proxy.Proto.Models.GameResponse), global::Proxy.Proto.Models.GameResponse.Parser, new[]{ "GameResponseType", "Success", "Messsage" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Proxy.Proto.Models.GameResponse), global::Proxy.Proto.Models.GameResponse.Parser, new[]{ "GameResponseType", "Success", "Messsage", "Name" }, null, null, null)
           }));
     }
     #endregion
@@ -89,6 +89,7 @@ namespace Proxy.Proto.Models {
       gameResponseType_ = other.gameResponseType_;
       success_ = other.success_;
       messsage_ = other.messsage_;
+      name_ = other.name_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -130,6 +131,17 @@ namespace Proxy.Proto.Models {
       }
     }
 
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 4;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as GameResponse);
@@ -146,6 +158,7 @@ namespace Proxy.Proto.Models {
       if (GameResponseType != other.GameResponseType) return false;
       if (Success != other.Success) return false;
       if (Messsage != other.Messsage) return false;
+      if (Name != other.Name) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -155,6 +168,7 @@ namespace Proxy.Proto.Models {
       if (GameResponseType != 0) hash ^= GameResponseType.GetHashCode();
       if (Success != false) hash ^= Success.GetHashCode();
       if (Messsage.Length != 0) hash ^= Messsage.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -180,6 +194,10 @@ namespace Proxy.Proto.Models {
         output.WriteRawTag(26);
         output.WriteBytes(Messsage);
       }
+      if (Name.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Name);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -196,6 +214,9 @@ namespace Proxy.Proto.Models {
       }
       if (Messsage.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Messsage);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -216,6 +237,9 @@ namespace Proxy.Proto.Models {
       }
       if (other.Messsage.Length != 0) {
         Messsage = other.Messsage;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -238,6 +262,10 @@ namespace Proxy.Proto.Models {
           }
           case 26: {
             Messsage = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            Name = input.ReadString();
             break;
           }
         }

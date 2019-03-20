@@ -17,10 +17,12 @@ enum GameRequestType {
   GET_STATUS_REQUEST = 9;
 
 
+
 }
 
 message GameRequest {
   GameRequestType gameRequestType = 1;
   bytes messsage = 2;
+  string name = 3;
 }
 

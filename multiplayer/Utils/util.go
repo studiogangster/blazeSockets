@@ -152,6 +152,30 @@ func reigisterReadEvent(poller netpoll.Poller, channel *channel.Channel) {
 }
 
 
+// CreateChannel creates a channel from connection for read and write functionality!
+func CreateGameEngineChannel(conn *net.Conn, sessionKey string) {
+
+
+	channel := &channel.Channel{
+		Engaged:        false,
+		SocketName:     sessionKey,
+		Conn:           *conn,
+		FileDescriptor: netpoll.Must(netpoll.Handle(*conn, netpoll.EventRead|netpoll.EventOneShot)), //Configuring oneshot/edhe trigger kqueue
+
+		// fileDescriptor: netpoll.Must(netpoll.HandleReadOnce(*conn)), //Configuring oneshot/edhe trigger kqueue
+		MessageFrame: messageframe.MessageFrame{
+			MessageLength: make([]byte, 2),
+		},
+	}
+
+	memDb.SOCKETS.Set(sessionKey, channel)
+	log.Println("Sessionkey", sessionKey)
+	reigisterReadEvent(memDb.Poller, channel)
+
+	//AddPlayerToRoom("test", channel)
+
+}
+
 
 // CreateChannel creates a channel from connection for read and write functionality!
 func CreateChannel(conn *net.Conn, sessionKey string) {
