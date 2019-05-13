@@ -4,7 +4,7 @@ import "os"
 
 const myId = "ThisIsMyIniqueId"
 
-const TCP_SOCKET_PORT = "8080"
+const TCP_SOCKET_PORT = 8080
 
 func getenv(key, fallback string) string {
 	value := os.Getenv(key)

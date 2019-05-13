@@ -38,6 +38,7 @@ type RoomInfo struct {
 
 	RoomName string `json:"roomId"`
 	IsLive bool `json:"isLive"`
+	Port int `json:"port"`
 	PingInterval time.Duration `json:"pingInterval"`
 	GameEngineAddress string `json:"address"`
 	retryCount int `json:"retryCount"`

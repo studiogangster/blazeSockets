@@ -9,6 +9,7 @@ import (
 	utils "blazesockets/multiplayer/Utils"
 
 	"net"
+	"strconv"
 )
 
 // Server config
@@ -36,7 +37,7 @@ func StartServer() {
 
 func startServer() {
 
-	ln, err := net.Listen("tcp", "0.0.0.0:"+InMemoryDB.ServerConfig.PORT)
+	ln, err := net.Listen("tcp", "0.0.0.0:"+ strconv.Itoa( InMemoryDB.ServerConfig.PORT ) )
 	if err != nil {
 		log.Println(err)
 	}

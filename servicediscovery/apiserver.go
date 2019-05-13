@@ -12,7 +12,6 @@ import (
 	"blazesockets/blazeconfig"
 	"fmt"
 	"blazesockets/multiplayer/Multiplayer"
-	"strconv"
 )
 
 
@@ -58,7 +57,8 @@ func getGameEngineInfo(roomName string) response.RoomInfo{
 	roomInfo.GameServerSocketState = "CONNECTED"
 	roomInfo.RoomName = gameEngine.RoomName
 	roomInfo.PingInterval = gameEngine.PingInterval
-	roomInfo.GameEngineAddress =  blazeconfig.GetMyIp() + ":" + blazeconfig.TCP_SOCKET_PORT //gameEngine.GameEngineAddress
+	roomInfo.GameEngineAddress =  blazeconfig.GetMyIp() //gameEngine.GameEngineAddress
+	roomInfo.Port = blazeconfig.TCP_SOCKET_PORT
 	}
 
 	return roomInfo
@@ -84,7 +84,7 @@ func StartApiServer() {
 			go createRoom(json.RoomName, json.Address, json.Port, json.Protocol)
 
 			json.Address = blazeconfig.GetMyIp()
-			json.Port,   err = strconv.Atoi(  blazeconfig.TCP_SOCKET_PORT )
+			json.Port =  blazeconfig.TCP_SOCKET_PORT
 
 			c.JSON(http.StatusOK, json)
 		}
@@ -128,13 +128,27 @@ func StartApiServer() {
 		}
 
 	})
+	r.POST("/api/status", func(c *gin.Context) {
+
+		var json request.RoomInfo
+		if err := c.ShouldBindJSON(&json); err != nil {
+			fmt.Println(json)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		}else {
+
+			fmt.Println(json.RoomName)
+			fmt.Println( getGameEngineInfo( json.RoomName  ) )
+
+			c.JSON(http.StatusOK, getGameEngineInfo( json.RoomName )  )
+
+		}
+
+	})
 
 	r.GET("/api/info", func(c *gin.Context) {
 
-
 		rooms := getRooms()
-
-
 		Response := map[string]response.RoomInfo{}
 
 		var index int
